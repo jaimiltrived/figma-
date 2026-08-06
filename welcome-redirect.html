@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome - Redirecting...</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 1rem;">
+
+  <div class="auth-card">
+    <div class="welcome-redirect-box">
+      <div class="loader-spinner"></div>
+      <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">Welcome Back!</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem;">Authenticating security permissions & redirecting to your <span style="color: var(--accent-primary); font-weight: 700;">Command Center</span>...</p>
+      <div class="strength-meter" style="margin-top: 1.5rem; height: 6px;">
+        <div id="redirect-progress" class="strength-bar" style="width: 0%; background: var(--accent-gradient);"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let progress = 0;
+    const bar = document.getElementById('redirect-progress');
+    const interval = setInterval(() => {
+      progress += 25;
+      if (bar) bar.style.width = progress + '%';
+      if (progress >= 100) {
+        clearInterval(interval);
+        window.location.href = 'dashboard.html';
+      }
+    }, 250);
+  </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - SVPMS Support & Sales</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🛡️</div>
+        <span>SVPMS<span class="text-gradient">.io</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="features.html" class="nav-link">Features</a></li>
+        <li><a href="pricing.html" class="nav-link">Pricing</a></li>
+        <li><a href="contact.html" class="nav-link active">Contact Us</a></li>
+        <li><a href="help.html" class="nav-link">Help Center</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="theme-toggle">🌙</button>
+        <a href="choose-role.html" class="btn btn-outline">Sign In</a>
+        <a href="choose-role.html" class="btn btn-primary">Book Demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding: 5rem 1.5rem;">
+    <div class="section-header">
+      <div class="badge badge-primary">Get In Touch</div>
+      <h2>Contact Our Security Advisors</h2>
+      <p>Have questions about hardware integrations or multi-location deployments? We're here to help.</p>
+    </div>
+
+    <div class="grid grid-2 gap-4">
+      <div class="glass-panel" style="padding: 2.5rem;">
+        <form id="contact-form">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" required placeholder="John Doe">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Work Email</label>
+            <input type="email" class="form-control" required placeholder="john@company.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company / Location Count</label>
+            <input type="text" class="form-control" placeholder="Acme Inc. (3 Sites)">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message</label>
+            <textarea class="form-control" rows="4" required placeholder="Tell us about your requirements..."></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full">Send Message ➔</button>
+        </form>
+      </div>
+
+      <div class="flex flex-col gap-3">
+        <div class="glass-panel" style="padding: 2rem;">
+          <h4>🏢 Head Office</h4>
+          <p style="color: var(--text-secondary); margin-top: 0.5rem;">100 Cyber Tower Plaza, Suite 800<br>San Francisco, CA 94107</p>
+          <p style="color: var(--text-secondary); margin-top: 0.5rem;">📞 +1 (800) 555-SVPMS</p>
+          <p style="color: var(--text-secondary);">✉️ support@svpms.io</p>
+        </div>
+
+        <div class="glass-panel" style="padding: 2rem; background: var(--bg-tertiary); text-align: center; height: 100%; display: flex; align-items: center; justify-content: center;">
+          <div>
+            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🗺️</div>
+            <h4 style="margin-bottom: 0.25rem;">Global Offices</h4>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">San Francisco • London • Singapore • Tokyo</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container" style="text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+      © 2026 SVPMS Security Systems Inc. All rights reserved. | <a href="index.html">Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

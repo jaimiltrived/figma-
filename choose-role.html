@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choose Login Role - SVPMS Security</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 1rem;">
+
+  <div class="auth-card">
+    <a href="index.html" style="position: absolute; top: 1.25rem; right: 1.25rem; color: var(--text-muted); font-size: 1.25rem; text-decoration: none;" title="Back to Home">✕</a>
+
+    <div class="auth-card-header">
+      <div class="brand-icon">👥</div>
+      <h2>Choose Login Role</h2>
+      <p>Select your operational portal access level</p>
+    </div>
+
+    <div class="role-grid">
+      <a href="login.html?role=Super+Admin" class="role-card" style="text-decoration: none;">
+        <div class="role-icon">⚡</div>
+        <div class="role-info">
+          <h4>Super Admin</h4>
+          <p>Full system settings, policies & multi-tenant logs</p>
+        </div>
+      </a>
+
+      <a href="login.html?role=Receptionist" class="role-card" style="text-decoration: none;">
+        <div class="role-icon">💻</div>
+        <div class="role-info">
+          <h4>Receptionist</h4>
+          <p>Visitor check-in kiosk, badge printing & arrivals</p>
+        </div>
+      </a>
+
+      <a href="login.html?role=Host+Employee" class="role-card" style="text-decoration: none;">
+        <div class="role-icon">👤</div>
+        <div class="role-info">
+          <h4>Host Employee</h4>
+          <p>Schedule guest visits, pre-approve & receive alerts</p>
+        </div>
+      </a>
+
+      <a href="login.html?role=Security+Guard" class="role-card" style="text-decoration: none;">
+        <div class="role-icon">🛡️</div>
+        <div class="role-info">
+          <h4>Security Guard</h4>
+          <p>Live perimeter checks, watchlist & evacuation roster</p>
+        </div>
+      </a>
+
+      <a href="login.html?role=Visitor" class="role-card" style="text-decoration: none;">
+        <div class="role-icon">🎫</div>
+        <div class="role-info">
+          <h4>Visitor Self-Service</h4>
+          <p>View active QR pass status & visit history</p>
+        </div>
+      </a>
+    </div>
+
+    <div style="text-align: center; margin-top: 1.5rem;">
+      <a href="index.html" style="font-size: 0.85rem; color: var(--text-secondary);">← Return to Website Home</a>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

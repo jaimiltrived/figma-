@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Command Center Dashboard - SVPMS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <a href="index.html" class="brand-logo" style="margin-bottom: 2.5rem;">
+        <div class="brand-icon">🛡️</div>
+        <span>SVPMS<span class="text-gradient">.io</span></span>
+      </a>
+
+      <ul style="display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1;">
+        <li style="padding: 0.75rem 1rem; background: var(--accent-glow); color: var(--accent-primary); border-radius: var(--radius-md); font-weight: 700;">📊 Live Dashboard</li>
+        <li style="padding: 0.75rem 1rem; color: var(--text-secondary); border-radius: var(--radius-md); cursor: pointer;">👥 Visitor Log</li>
+        <li style="padding: 0.75rem 1rem; color: var(--text-secondary); border-radius: var(--radius-md); cursor: pointer;">🎫 Pass Pre-Approvals</li>
+        <li style="padding: 0.75rem 1rem; color: var(--text-secondary); border-radius: var(--radius-md); cursor: pointer;">🛡️ Watchlist & Blacklist</li>
+        <li style="padding: 0.75rem 1rem; color: var(--text-secondary); border-radius: var(--radius-md); cursor: pointer;">⚙️ Kiosk Settings</li>
+      </ul>
+
+      <a href="index.html" class="btn btn-outline btn-full" style="margin-top: auto; text-decoration: none;">Log Out ➔</a>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="dash-header">
+        <div>
+          <h1 style="font-size: 1.75rem; font-weight: 800;">Command Center</h1>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">Logged in as: <span class="badge badge-primary">Super Admin</span></p>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="badge badge-success">● System Status: Operational</span>
+          <div class="user-avatar" style="width: 40px; height: 40px;">SA</div>
+        </div>
+      </div>
+
+      <div class="grid grid-4 gap-3 mb-4" style="margin-bottom: 2rem;">
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Building Occupancy</div>
+          <div style="font-size: 2rem; font-weight: 800; margin-top: 0.25rem;">142 / 500</div>
+        </div>
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Today's Arrivals</div>
+          <div style="font-size: 2rem; font-weight: 800; margin-top: 0.25rem; color: var(--success);">89 Guests</div>
+        </div>
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Pending Approvals</div>
+          <div style="font-size: 2rem; font-weight: 800; margin-top: 0.25rem; color: var(--warning);">12 Guests</div>
+        </div>
+        <div class="glass-panel" style="padding: 1.5rem;">
+          <div style="font-size: 0.85rem; color: var(--text-secondary);">Security Alerts</div>
+          <div style="font-size: 2rem; font-weight: 800; margin-top: 0.25rem; color: var(--danger);">0 Flags</div>
+        </div>
+      </div>
+
+      <div class="glass-panel" style="padding: 2rem;">
+        <h3 style="margin-bottom: 1rem;">Recent Active Visitors</h3>
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border-color); color: var(--text-secondary);">
+              <th style="padding: 0.75rem;">Visitor Name</th>
+              <th style="padding: 0.75rem;">Company</th>
+              <th style="padding: 0.75rem;">Host</th>
+              <th style="padding: 0.75rem;">Check In Time</th>
+              <th style="padding: 0.75rem;">Pass Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 0.85rem; font-weight: 600;">Sarah Connor</td>
+              <td>Cyberdyne Systems</td>
+              <td>Alex Mercer</td>
+              <td>09:15 AM</td>
+              <td><span class="badge badge-success">On Site</span></td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 0.85rem; font-weight: 600;">Bruce Wayne</td>
+              <td>Wayne Enterprises</td>
+              <td>Lucius Fox</td>
+              <td>10:30 AM</td>
+              <td><span class="badge badge-success">On Site</span></td>
+            </tr>
+            <tr>
+              <td style="padding: 0.85rem; font-weight: 600;">Diana Prince</td>
+              <td>Themyscira Corp</td>
+              <td>Clark Kent</td>
+              <td>11:05 AM</td>
+              <td><span class="badge badge-warning">Pre-Approved</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

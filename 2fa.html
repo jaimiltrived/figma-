@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2-Factor Authentication - SVPMS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 1rem;">
+
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <div class="brand-icon">🔐</div>
+      <h2>2-Factor Verification</h2>
+      <p>Enter the 6-digit code from your Authenticator App</p>
+    </div>
+
+    <form action="welcome-redirect.html">
+      <div class="form-group">
+        <label class="form-label">Authenticator Code</label>
+        <input type="text" class="form-control" required placeholder="e.g. 482 910" value="482 910" style="text-align: center; letter-spacing: 0.3em; font-size: 1.25rem; font-weight: 700;">
+      </div>
+
+      <div style="margin-bottom: 1.25rem;">
+        <label style="font-size: 0.85rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.4rem;">
+          <input type="checkbox" id="trust-device" checked> Trust this browser for 30 days
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-full">Verify 2FA ➔</button>
+    </form>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

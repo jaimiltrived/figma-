@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Plans - SVPMS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🛡️</div>
+        <span>SVPMS<span class="text-gradient">.io</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="about.html" class="nav-link">About Us</a></li>
+        <li><a href="features.html" class="nav-link">Features</a></li>
+        <li><a href="pricing.html" class="nav-link active">Pricing</a></li>
+        <li><a href="contact.html" class="nav-link">Contact Us</a></li>
+        <li><a href="help.html" class="nav-link">Help Center</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button id="theme-toggle-btn" class="theme-toggle">🌙</button>
+        <a href="choose-role.html" class="btn btn-outline">Sign In</a>
+        <a href="choose-role.html" class="btn btn-primary">Book Demo</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container" style="padding: 5rem 1.5rem;">
+    <div class="section-header">
+      <div class="badge badge-primary">Flexible Plans</div>
+      <h2>Transparent Enterprise Pricing</h2>
+      <p>Choose the right plan for your facility scale with simple monthly or annual billing.</p>
+    </div>
+
+    <div class="pricing-toggle-wrapper">
+      <span style="font-weight: 600;">Monthly Billing</span>
+      <label class="switch">
+        <input type="checkbox" id="pricing-toggle">
+        <span class="slider"></span>
+      </label>
+      <span style="font-weight: 600;">Annual Billing <span class="badge badge-success">-20% OFF</span></span>
+    </div>
+
+    <div class="grid grid-4 gap-3 mb-4">
+      <div class="glass-panel pricing-card">
+        <h3>Free Trial</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">14 Days full access</p>
+        <div class="price-amount">$0</div>
+        <div class="pricing-features">
+          <div class="pricing-feature-item">✓ Up to 100 Visitors/mo</div>
+          <div class="pricing-feature-item">✓ 1 Location</div>
+          <div class="pricing-feature-item">✓ Email Notifications</div>
+        </div>
+        <a href="choose-role.html" class="btn btn-outline btn-full">Start Trial</a>
+      </div>
+
+      <div class="glass-panel pricing-card">
+        <h3>Starter</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Small Offices</p>
+        <div class="price-amount" id="price-starter">$49<span style="font-size: 1rem; color: var(--text-muted);">/mo</span></div>
+        <div class="pricing-features">
+          <div class="pricing-feature-item">✓ Up to 1,000 Visitors/mo</div>
+          <div class="pricing-feature-item">✓ Unlimited Hosts</div>
+          <div class="pricing-feature-item">✓ Digital Badge Printing</div>
+        </div>
+        <a href="choose-role.html" class="btn btn-outline btn-full">Choose Starter</a>
+      </div>
+
+      <div class="glass-panel pricing-card popular">
+        <div class="popular-badge">Most Popular</div>
+        <h3>Professional</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Growing Enterprises</p>
+        <div class="price-amount" id="price-pro">$149<span style="font-size: 1rem; color: var(--text-muted);">/mo</span></div>
+        <div class="pricing-features">
+          <div class="pricing-feature-item">✓ Unlimited Visitors</div>
+          <div class="pricing-feature-item">✓ Slack & Teams Integrations</div>
+          <div class="pricing-feature-item">✓ Live Tracking Dashboard</div>
+          <div class="pricing-feature-item">✓ Custom Branding</div>
+        </div>
+        <a href="choose-role.html" class="btn btn-primary btn-full">Choose Professional</a>
+      </div>
+
+      <div class="glass-panel pricing-card">
+        <h3>Enterprise</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Multi-Site Global Brands</p>
+        <div class="price-amount">Custom</div>
+        <div class="pricing-features">
+          <div class="pricing-feature-item">✓ Multi-Tenant SSO (SAML/Okta)</div>
+          <div class="pricing-feature-item">✓ Dedicated SLA Support</div>
+          <div class="pricing-feature-item">✓ Hardware Kiosk Bundles</div>
+        </div>
+        <a href="contact.html" class="btn btn-secondary btn-full">Contact Sales</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container" style="text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
+      © 2026 SVPMS Security Systems Inc. All rights reserved. | <a href="index.html">Back to Home</a>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Organization - SVPMS Multi-Tenant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 1rem;">
+
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <div class="brand-icon">🏢</div>
+      <h2>Select Organization</h2>
+      <p>Multi-tenant deployment workspace</p>
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <input type="text" class="form-control" placeholder="Search tenant organization...">
+    </div>
+
+    <div class="role-grid" id="org-list">
+      <div class="role-card selected">
+        <div class="role-icon">🏢</div>
+        <div class="role-info">
+          <h4>Acme Corporation HQ</h4>
+          <p>Tenant ID: #TEN-001 • San Francisco</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">🤖</div>
+        <div class="role-info">
+          <h4>Cyberdyne Systems</h4>
+          <p>Tenant ID: #TEN-002 • Los Angeles</p>
+        </div>
+      </div>
+      <div class="role-card">
+        <div class="role-icon">⚡</div>
+        <div class="role-info">
+          <h4>Stark Global Security</h4>
+          <p>Tenant ID: #TEN-003 • New York</p>
+        </div>
+      </div>
+    </div>
+
+    <a href="2fa.html" class="btn btn-primary btn-full" style="margin-top: 1.5rem; text-decoration: none;">Continue to Workspace ➔</a>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

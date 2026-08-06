@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Locked - SVPMS Security</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 2rem 1rem;">
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <div class="auth-card" style="text-align: center;">
+    <div class="auth-card-header">
+      <div class="brand-icon" style="background: var(--danger-glow); color: var(--danger);">⚠️</div>
+      <h2>Account Locked</h2>
+      <p style="color: var(--danger); font-weight: 600;">Multiple failed login attempts detected.</p>
+    </div>
+    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">For your safety, access has been temporarily suspended. Please contact your organization administrator or security ops.</p>
+
+    <button class="btn btn-secondary btn-full mb-2" id="btn-contact-admin" style="margin-bottom: 1rem;">Contact Security Administrator</button>
+    <div>
+      <a href="login.html" style="font-size: 0.85rem;">Try Login Again</a>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

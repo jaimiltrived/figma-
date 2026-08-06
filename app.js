@@ -739,30 +739,239 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     7. Helper Utilities (Toast Notification System)
+     8. Super Admin Control Center Telemetry & Interactivity Engine
      ========================================================================== */
-  function showToast(message, type = 'info') {
-    const container = document.getElementById('toast-container');
-    if (!container) return;
 
-    const toast = document.createElement('div');
-    toast.className = 'toast';
+  // 1. Sidebar Collapse / Expand Toggle
+  const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+  if (sidebarToggleBtn) {
+    sidebarToggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('sidebar-collapsed');
+      showToast(document.body.classList.contains('sidebar-collapsed') ? 'Sidebar collapsed' : 'Sidebar expanded', 'info');
+    });
+  }
 
-    let icon = 'ℹ️';
-    if (type === 'success') icon = '✅';
-    if (type === 'warning') icon = '⚠️';
-    if (type === 'danger') icon = '🔴';
+  // Keyboard Shortcuts (Ctrl+K for search, Ctrl+B for sidebar)
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+      e.preventDefault();
+      const searchInput = document.getElementById('global-search-input');
+      if (searchInput) searchInput.focus();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'b') {
+      e.preventDefault();
+      document.body.classList.toggle('sidebar-collapsed');
+    }
+  });
 
-    toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
-    container.appendChild(toast);
+  // 2. Chart.js Visual Telemetry Initialization
+  if (typeof Chart !== 'undefined') {
+    // Chart 1: 12-Month Influx Trend Line Chart
+    const visitorTrendCtx = document.getElementById('visitorTrendChart');
+    if (visitorTrendCtx) {
+      new Chart(visitorTrendCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          datasets: [{
+            label: 'Visitor Arrivals',
+            data: [1200, 1350, 1420, 1580, 1620, 1750, 1690, 1820, 1910, 1850, 1980, 2050],
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.15)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.35,
+            pointRadius: 4,
+            pointBackgroundColor: '#8b5cf6'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } }
+          }
+        }
+      });
+    }
 
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(100%)';
-      toast.style.transition = 'all 0.3s ease';
-      setTimeout(() => toast.remove(), 300);
-    }, 4000);
+    // Chart 2: Visitor Type Distribution Doughnut Chart
+    const visitorTypeCtx = document.getElementById('visitorTypeChart');
+    if (visitorTypeCtx) {
+      new Chart(visitorTypeCtx.getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Clients & Partners', 'Vendors & Contractors', 'Candidates / Interviews', 'VIP Executive Guests'],
+          datasets: [{
+            data: [42, 31, 18, 9],
+            backgroundColor: ['#6366f1', '#3b82f6', '#f59e0b', '#d946ef'],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { color: '#9ca3af', font: { size: 11 } } } },
+          cutout: '70%'
+        }
+      });
+    }
+
+    // Chart 3: Department Bar Chart
+    const departmentCtx = document.getElementById('departmentChart');
+    if (departmentCtx) {
+      new Chart(departmentCtx.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: ['Engineering', 'Finance', 'HR & Legal', 'Operations', 'Executive'],
+          datasets: [{
+            label: 'Visits Today',
+            data: [85, 62, 44, 38, 22],
+            backgroundColor: 'rgba(99, 102, 241, 0.85)',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#9ca3af' } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } }
+          }
+        }
+      });
+    }
+
+    // Chart 4: Weekly Area Chart
+    const weeklyAreaCtx = document.getElementById('weeklyAreaChart');
+    if (weeklyAreaCtx) {
+      new Chart(weeklyAreaCtx.getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          datasets: [{
+            label: 'Weekly Influx',
+            data: [180, 240, 310, 265, 210, 95, 42],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.18)',
+            fill: true,
+            tension: 0.4,
+            borderWidth: 3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { grid: { display: false }, ticks: { color: '#9ca3af' } },
+            y: { grid: { color: 'rgba(255, 255, 255, 0.05)' }, ticks: { color: '#9ca3af' } }
+          }
+        }
+      });
+    }
+  }
+
+  // 3. Admin Sidebar Tab & Navigation Handler
+  const adminSidebar = id('admin-sidebar');
+  const breadcrumbSpan = id('current-tab-breadcrumb');
+
+  function id(elemId) { return document.getElementById(elemId); }
+
+  if (adminSidebar) {
+    adminSidebar.querySelectorAll('.sidebar-menu-item').forEach(item => {
+      item.addEventListener('click', () => {
+        adminSidebar.querySelectorAll('.sidebar-menu-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        const labelText = item.querySelector('.sidebar-label')?.textContent || 'Overview Control Center';
+        if (breadcrumbSpan) breadcrumbSpan.textContent = labelText;
+        showToast(`Navigated to ${labelText}`, 'info');
+      });
+    });
+  }
+
+  // 4. Master Table Search & Status Filter
+  const masterTableSearch = id('master-table-search');
+  const masterTableStatus = id('master-table-status');
+  const masterTbody = id('master-visitor-tbody');
+
+  function filterMasterTable() {
+    if (!masterTbody) return;
+    const query = (masterTableSearch ? masterTableSearch.value : '').toLowerCase();
+    const selectedStatus = masterTableStatus ? masterTableStatus.value : 'all';
+
+    const rows = masterTbody.querySelectorAll('.master-row');
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const rowStatus = row.dataset.status || '';
+
+      const matchesQuery = text.includes(query);
+      const matchesStatus = (selectedStatus === 'all') || (rowStatus === selectedStatus);
+
+      if (matchesQuery && matchesStatus) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  if (masterTableSearch) masterTableSearch.addEventListener('input', filterMasterTable);
+  if (masterTableStatus) masterTableStatus.addEventListener('change', filterMasterTable);
+
+  // 5. Quick Actions Hub Buttons
+  const qaRegister = id('qa-register');
+  const btnRegisterHero = id('btn-register-guest-hero');
+  const qaQr = id('qa-qr');
+  const qaPrint = id('qa-print');
+  const qaEmployee = id('qa-employee');
+  const qaDepartment = id('qa-department');
+  const qaExport = id('qa-export');
+  const btnExportMaster = id('btn-export-master-report');
+  const qaAnalytics = id('qa-analytics');
+  const qaBlacklist = id('qa-blacklist');
+
+  if (qaRegister) qaRegister.addEventListener('click', openRegisterModal);
+  if (btnRegisterHero) btnRegisterHero.addEventListener('click', openRegisterModal);
+  if (qaQr) qaQr.addEventListener('click', () => showToast('Opening Express QR Pass Studio...', 'info'));
+  if (qaPrint) qaPrint.addEventListener('click', () => showToast('Triggering Brother/Zebra thermal badge printer...', 'success'));
+  if (qaEmployee) qaEmployee.addEventListener('click', () => showToast('Opening Employee Directory HR Sync...', 'info'));
+  if (qaDepartment) qaDepartment.addEventListener('click', () => showToast('Opening Workplace Gate & Zone Manager...', 'info'));
+  if (qaAnalytics) qaAnalytics.addEventListener('click', () => showToast('Loading Telemetry & Peak Hours Analytics...', 'info'));
+  if (qaBlacklist) qaBlacklist.addEventListener('click', () => showToast('Opening Watchlist & Security Ban List...', 'warning'));
+
+  if (qaExport || btnExportMaster) {
+    const triggerExport = () => {
+      showToast('Exporting Executive Security & Visitor Audit Log (PDF/CSV)', 'success');
+    };
+    if (qaExport) qaExport.addEventListener('click', triggerExport);
+    if (btnExportMaster) btnExportMaster.addEventListener('click', triggerExport);
+  }
+
+  // 6. Approval Queue Panel Cards Interactivity
+  const approvalQueueList = id('approval-queue-list');
+  if (approvalQueueList) {
+    approvalQueueList.addEventListener('click', (e) => {
+      const target = e.target;
+      const card = target.closest('div[style*="background"]');
+      if (!card) return;
+
+      const visitorName = card.querySelector('div[style*="font-weight: 800"]')?.textContent || 'Visitor';
+
+      if (target.classList.contains('btn-approve-card')) {
+        card.remove();
+        showToast(`Visitor pass for ${visitorName} approved!`, 'success');
+      } else if (target.classList.contains('btn-reject-card')) {
+        card.remove();
+        showToast(`Visitor pass for ${visitorName} rejected. Host notified.`, 'danger');
+      }
+    });
   }
 
 });
+
 

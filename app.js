@@ -516,7 +516,230 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ==========================================================================
-     6. Helper Utilities (Toast Notification System)
+     6. Command Center Dashboard Interactivity
+     ========================================================================== */
+
+  // Real-Time Live Clock
+  const liveTimestamp = document.getElementById('live-timestamp');
+  function updateLiveClock() {
+    if (!liveTimestamp) return;
+    const now = new Date();
+    const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    liveTimestamp.textContent = now.toLocaleDateString('en-US', options);
+  }
+  updateLiveClock();
+  setInterval(updateLiveClock, 1000);
+
+  // Live Table Search & Filter Engine
+  const visitorSearchInput = document.getElementById('visitor-search-input');
+  const visitorStatusSelect = document.getElementById('visitor-status-select');
+  const visitorTableBody = document.getElementById('visitor-table-body');
+
+  function filterVisitorTable() {
+    if (!visitorTableBody) return;
+    const query = (visitorSearchInput ? visitorSearchInput.value : '').toLowerCase();
+    const selectedStatus = visitorStatusSelect ? visitorStatusSelect.value : 'all';
+
+    const rows = visitorTableBody.querySelectorAll('.visitor-row');
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const rowStatus = row.dataset.status || '';
+
+      const matchesQuery = text.includes(query);
+      const matchesStatus = (selectedStatus === 'all') || (rowStatus === selectedStatus);
+
+      if (matchesQuery && matchesStatus) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  }
+
+  if (visitorSearchInput) visitorSearchInput.addEventListener('input', filterVisitorTable);
+  if (visitorStatusSelect) visitorStatusSelect.addEventListener('change', filterVisitorTable);
+
+  // Register Guest Modal Logic
+  const registerModal = document.getElementById('register-guest-modal');
+  const btnOpenRegisterModal = document.getElementById('btn-open-register-modal');
+  const modalCloseBtn = document.getElementById('modal-close-btn');
+  const modalCancelBtn = document.getElementById('modal-cancel-btn');
+  const registerGuestForm = document.getElementById('register-guest-form');
+
+  function openRegisterModal() {
+    if (registerModal) registerModal.classList.add('active');
+  }
+  function closeRegisterModal() {
+    if (registerModal) registerModal.classList.remove('active');
+    if (registerGuestForm) registerGuestForm.reset();
+  }
+
+  if (btnOpenRegisterModal) btnOpenRegisterModal.addEventListener('click', openRegisterModal);
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeRegisterModal);
+  if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeRegisterModal);
+
+  if (registerGuestForm) {
+    registerGuestForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-visitor-name').value.trim();
+      const org = document.getElementById('reg-visitor-org').value.trim();
+      const host = document.getElementById('reg-host-name').value.trim();
+      const zone = document.getElementById('reg-gate-zone').value;
+      const status = document.getElementById('reg-pass-type').value;
+
+      const randomId = Math.floor(8949 + Math.random() * 50);
+      const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'GV';
+
+      let statusBadgeHtml = `<span class="badge badge-success">● On Site</span>`;
+      let actionBtnHtml = `<button class="btn btn-outline btn-checkout" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">Check Out</button>`;
+
+      if (status === 'Pre-Approved') {
+        statusBadgeHtml = `<span class="badge badge-warning">⚡ Pre-Approved</span>`;
+        actionBtnHtml = `<button class="btn btn-primary btn-checkin" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">Check In Now</button>`;
+      } else if (status === 'Pending Host Approval') {
+        statusBadgeHtml = `<span class="badge badge-danger">⏳ Pending Host Approval</span>`;
+        actionBtnHtml = `<button class="btn btn-primary btn-approve" style="padding: 0.35rem 0.65rem; font-size: 0.75rem;">Approve</button>`;
+      }
+
+      const newRow = document.createElement('tr');
+      newRow.className = 'visitor-row';
+      newRow.dataset.status = status;
+      newRow.style.borderBottom = '1px solid var(--border-color)';
+      newRow.style.transition = 'background var(--transition-fast)';
+
+      newRow.innerHTML = `
+        <td style="padding: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div class="user-avatar" style="width: 36px; height: 36px; background: var(--accent-gradient); font-weight: 700; font-size: 0.8rem;">${initials}</div>
+            <div>
+              <div class="visitor-name" style="font-weight: 700; color: var(--text-primary);">${name}</div>
+              <div class="visitor-org" style="font-size: 0.78rem; color: var(--text-secondary);">${org}</div>
+            </div>
+          </div>
+        </td>
+        <td style="padding: 1rem;">
+          <div class="host-name" style="font-weight: 600;">${host}</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">Host Employee</div>
+        </td>
+        <td style="padding: 1rem;">
+          <div style="font-weight: 600;">Just Now</div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">Badge Activated</div>
+        </td>
+        <td style="padding: 1rem;">
+          <div style="font-weight: 600;">${zone}</div>
+          <span class="badge" style="background: var(--bg-tertiary); font-size: 0.75rem;">#V-${randomId}</span>
+        </td>
+        <td style="padding: 1rem;">${statusBadgeHtml}</td>
+        <td style="padding: 1rem; text-align: right;">${actionBtnHtml}</td>
+      `;
+
+      if (visitorTableBody) {
+        visitorTableBody.prepend(newRow);
+      }
+
+      closeRegisterModal();
+      showToast(`Visitor ${name} registered. Pass #V-${randomId} issued!`, 'success');
+      filterVisitorTable();
+    });
+  }
+
+  // Interactive Action Handlers (Check Out, Check In, Approve, Deny)
+  if (visitorTableBody) {
+    visitorTableBody.addEventListener('click', (e) => {
+      const target = e.target;
+      const row = target.closest('tr');
+      if (!row) return;
+
+      const visitorName = row.querySelector('.visitor-name')?.textContent || 'Visitor';
+
+      if (target.classList.contains('btn-checkout')) {
+        row.dataset.status = 'Checked Out';
+        const statusTd = row.children[4];
+        const actionTd = row.children[5];
+        if (statusTd) statusTd.innerHTML = `<span class="badge" style="background: rgba(255, 255, 255, 0.08); color: var(--text-muted);">Checked Out</span>`;
+        if (actionTd) actionTd.innerHTML = `<span style="font-size: 0.78rem; color: var(--text-muted);">Pass Expired</span>`;
+        showToast(`${visitorName} has been checked out successfully.`, 'info');
+      }
+      else if (target.classList.contains('btn-checkin')) {
+        row.dataset.status = 'On Site';
+        const statusTd = row.children[4];
+        const actionTd = row.children[5];
+        if (statusTd) statusTd.innerHTML = `<span class="badge badge-success">● On Site</span>`;
+        if (actionTd) actionTd.innerHTML = `<button class="btn btn-outline btn-checkout" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">Check Out</button>`;
+        showToast(`${visitorName} checked in. Gate turnstile unlocked.`, 'success');
+      }
+      else if (target.classList.contains('btn-approve')) {
+        row.dataset.status = 'Pre-Approved';
+        const statusTd = row.children[4];
+        const actionTd = row.children[5];
+        if (statusTd) statusTd.innerHTML = `<span class="badge badge-warning">⚡ Pre-Approved</span>`;
+        if (actionTd) actionTd.innerHTML = `<button class="btn btn-primary btn-checkin" style="padding: 0.35rem 0.75rem; font-size: 0.78rem;">Check In Now</button>`;
+        showToast(`Visitor pass for ${visitorName} approved by Security Officer.`, 'success');
+      }
+      else if (target.classList.contains('btn-deny')) {
+        row.dataset.status = 'Denied';
+        const statusTd = row.children[4];
+        const actionTd = row.children[5];
+        if (statusTd) statusTd.innerHTML = `<span class="badge badge-danger">🔴 Access Denied</span>`;
+        if (actionTd) actionTd.innerHTML = `<span style="font-size: 0.78rem; color: var(--danger);">Rejected</span>`;
+        showToast(`Pass request for ${visitorName} denied. Host notified.`, 'danger');
+      }
+    });
+  }
+
+  // Sidebar Tab Interactivity
+  const sidebarNav = document.getElementById('sidebar-nav');
+  if (sidebarNav) {
+    sidebarNav.querySelectorAll('.sidebar-item').forEach(item => {
+      item.addEventListener('click', () => {
+        sidebarNav.querySelectorAll('.sidebar-item').forEach(i => {
+          i.style.background = 'none';
+          i.style.color = 'var(--text-secondary)';
+          i.style.fontWeight = '500';
+        });
+        item.style.background = 'var(--accent-glow)';
+        item.style.color = 'var(--accent-primary)';
+        item.style.fontWeight = '700';
+
+        const tabName = item.dataset.tab;
+        showToast(`Navigated to ${item.innerText.trim()}`, 'info');
+      });
+    });
+  }
+
+  // Export Visitor Log CSV Logic
+  const btnExportCsv = document.getElementById('btn-export-csv');
+  if (btnExportCsv) {
+    btnExportCsv.addEventListener('click', () => {
+      if (!visitorTableBody) return;
+      const rows = Array.from(visitorTableBody.querySelectorAll('.visitor-row'));
+      let csvContent = "data:text/csv;charset=utf-8,Visitor Name,Organization,Host,CheckIn Time,Badge ID,Status\n";
+
+      rows.forEach(r => {
+        const name = r.querySelector('.visitor-name')?.textContent || '';
+        const org = r.querySelector('.visitor-org')?.textContent || '';
+        const host = r.querySelector('.host-name')?.textContent || '';
+        const checkin = r.children[2]?.querySelector('div')?.textContent || '';
+        const badge = r.children[3]?.querySelector('.badge')?.textContent || '';
+        const status = r.dataset.status || '';
+
+        csvContent += `"${name}","${org}","${host}","${checkin}","${badge}","${status}"\n`;
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `SVPMS_Visitor_Audit_Log_${new Date().toISOString().slice(0,10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Exported official visitor audit log (CSV)', 'success');
+    });
+  }
+
+  /* ==========================================================================
+     7. Helper Utilities (Toast Notification System)
      ========================================================================== */
   function showToast(message, type = 'info') {
     const container = document.getElementById('toast-container');
@@ -542,3 +765,4 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 });
+

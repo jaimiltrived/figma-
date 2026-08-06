@@ -3,20 +3,46 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact Us - SVPMS Support & Sales</title>
+  <title>Contact Security Experts & Enterprise Sales - SVPMS</title>
+  <meta name="description" content="Get in touch with SVPMS security advisors. Request custom enterprise quotes, hardware integration assistance, or 24/7 technical support.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Custom Contact Page Enhancements */
+    .contact-hero { text-align: center; padding: 4rem 1.5rem 2.5rem; position: relative; }
+    .inquiry-pills { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.5rem; }
+    .inquiry-pill-btn { padding: 0.5rem 1rem; border-radius: var(--radius-full); background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all var(--transition-fast); }
+    .inquiry-pill-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+    .inquiry-pill-btn.active { background: var(--accent-gradient); color: #fff; border-color: transparent; }
+
+    .office-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 1.5rem; transition: all var(--transition-fast); }
+    .office-card:hover { border-color: var(--accent-primary); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+    .live-chat-card { background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%); border: 1px solid var(--accent-glow); border-radius: var(--radius-lg); padding: 1.75rem; text-align: center; }
+
+    .world-map-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; position: relative; overflow: hidden; }
+    .map-hub-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent-primary); box-shadow: 0 0 12px var(--accent-primary); position: relative; display: inline-block; }
+    .map-hub-dot::after { content: ''; position: absolute; top: -6px; left: -6px; width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--accent-primary); opacity: 0.6; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { transform: scale(0.5); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+  </style>
 </head>
 <body>
 
-  <!-- Toast Container -->
+  <!-- Toast Notification Container -->
   <div id="toast-container" class="toast-container"></div>
 
   <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo">
-        <div class="brand-icon">🛡️</div>
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
         <span>SVPMS<span class="text-gradient">.io</span></span>
       </a>
 
@@ -30,68 +56,255 @@
       </ul>
 
       <div class="nav-actions">
-        <button id="theme-toggle-btn" class="theme-toggle">🌙</button>
+        <button id="theme-toggle-btn" class="theme-toggle" title="Toggle Theme">
+          <span id="theme-icon">🌙</span>
+        </button>
         <a href="choose-role.html" class="btn btn-outline">Sign In</a>
         <a href="choose-role.html" class="btn btn-primary">Book Demo</a>
       </div>
     </div>
   </nav>
 
-  <main class="container" style="padding: 5rem 1.5rem;">
-    <div class="section-header">
-      <div class="badge badge-primary">Get In Touch</div>
-      <h2>Contact Our Security Advisors</h2>
-      <p>Have questions about hardware integrations or multi-location deployments? We're here to help.</p>
+  <!-- Contact Hero Header -->
+  <header class="contact-hero">
+    <div class="hero-bg-glow"></div>
+    <div class="container">
+      <div class="badge badge-primary mb-3">💬 24/7 Security Advisory Support</div>
+      <h1 style="font-size: 2.75rem; font-weight: 800; line-height: 1.2;">
+        Connect with Our <span class="text-gradient">Solutions Team</span>
+      </h1>
+      <p style="max-width: 680px; margin: 1rem auto 0; color: var(--text-secondary); font-size: 1.1rem;">
+        Whether you need a custom enterprise deployment quote, hardware integration advice, or SOC2 compliance docs — our response SLA is under 15 minutes.
+      </p>
     </div>
+  </header>
 
-    <div class="grid grid-2 gap-4">
+  <main class="container" style="padding: 1rem 1.5rem 5rem;">
+    <!-- Main Form & Quick Info Grid -->
+    <div class="grid grid-2 gap-4 mb-5" style="margin-bottom: 4rem; display: grid; grid-template-columns: 1.4fr 1fr;">
+      
+      <!-- Left Column: Interactive Contact Form -->
       <div class="glass-panel" style="padding: 2.5rem;">
+        <h3 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem;">Send Us a Message</h3>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Select your inquiry type to route your request to the appropriate specialist.</p>
+
+        <!-- Category Selector -->
+        <div class="inquiry-pills">
+          <button type="button" class="inquiry-pill-btn active" data-inquiry="sales">💼 Sales & Pricing Quote</button>
+          <button type="button" class="inquiry-pill-btn" data-inquiry="support">🛠️ Technical Support</button>
+          <button type="button" class="inquiry-pill-btn" data-inquiry="hardware">🔌 Kiosk & Badge Hardware</button>
+          <button type="button" class="inquiry-pill-btn" data-inquiry="compliance">🔒 SOC2 & Compliance</button>
+        </div>
+
         <form id="contact-form">
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input type="text" class="form-control" required placeholder="John Doe">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" id="contact-name" class="form-control" placeholder="e.g. Marcus Vance" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Work Email</label>
+              <input type="email" id="contact-email" class="form-control" placeholder="marcus@enterprise.com" required>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Work Email</label>
-            <input type="email" class="form-control" required placeholder="john@company.com">
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Company / Organization</label>
+              <input type="text" id="contact-company" class="form-control" placeholder="Acme Enterprise Inc." required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Workplace Facilities Count</label>
+              <select id="contact-sites" class="form-control" style="background: var(--bg-tertiary);">
+                <option value="1 Site">1 Corporate Lobby</option>
+                <option value="2-5 Sites">2 - 5 Workplace Facilities</option>
+                <option value="6-20 Sites">6 - 20 Multi-tenant Towers</option>
+                <option value="20+ Sites">20+ Global HQ Buildings</option>
+              </select>
+            </div>
           </div>
-          <div class="form-group">
-            <label class="form-label">Company / Location Count</label>
-            <input type="text" class="form-control" placeholder="Acme Inc. (3 Sites)">
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Deployment Timeline</label>
+            <select id="contact-timeline" class="form-control" style="background: var(--bg-tertiary);">
+              <option value="Immediate">Urgent: Immediate Deployment (< 14 Days)</option>
+              <option value="30 Days">Standard: Deployment within 30 Days</option>
+              <option value="Evaluation">Evaluating Options for Next Quarter</option>
+            </select>
           </div>
-          <div class="form-group">
-            <label class="form-label">Message</label>
-            <textarea class="form-control" rows="4" required placeholder="Tell us about your requirements..."></textarea>
+
+          <div class="form-group" style="margin-bottom: 1.75rem;">
+            <label class="form-label">Message Details</label>
+            <textarea id="contact-message" class="form-control" rows="4" placeholder="Tell us about your security requirements, hardware printers, or integration needs..." required></textarea>
           </div>
-          <button type="submit" class="btn btn-primary btn-full">Send Message ➔</button>
+
+          <button type="submit" class="btn btn-primary btn-full btn-lg" style="display: flex; justify-content: center; align-items: center; gap: 0.5rem;">
+            <span>🚀 Dispatch Message to Security Advisor</span>
+          </button>
         </form>
       </div>
 
-      <div class="flex flex-col gap-3">
-        <div class="glass-panel" style="padding: 2rem;">
-          <h4>🏢 Head Office</h4>
-          <p style="color: var(--text-secondary); margin-top: 0.5rem;">100 Cyber Tower Plaza, Suite 800<br>San Francisco, CA 94107</p>
-          <p style="color: var(--text-secondary); margin-top: 0.5rem;">📞 +1 (800) 555-SVPMS</p>
-          <p style="color: var(--text-secondary);">✉️ support@svpms.io</p>
+      <!-- Right Column: Direct Channels & Support Cards -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        
+        <!-- Live Chat Card -->
+        <div class="live-chat-card">
+          <div style="font-size: 2.25rem; margin-bottom: 0.5rem;">💬</div>
+          <h4 style="font-size: 1.2rem; font-weight: 800;">Need Immediate Help?</h4>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0.35rem 0 1.25rem;">
+            Our security engineers are online right now on live chat. Average wait time: <strong style="color: var(--success);">42 seconds</strong>.
+          </p>
+          <button id="btn-start-live-chat" class="btn btn-primary btn-full">
+            <span>⚡ Start Instant Live Chat</span>
+          </button>
         </div>
 
-        <div class="glass-panel" style="padding: 2rem; background: var(--bg-tertiary); text-align: center; height: 100%; display: flex; align-items: center; justify-content: center;">
-          <div>
-            <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🗺️</div>
-            <h4 style="margin-bottom: 0.25rem;">Global Offices</h4>
-            <p style="font-size: 0.85rem; color: var(--text-secondary);">San Francisco • London • Singapore • Tokyo</p>
+        <!-- Phone & Direct Email -->
+        <div class="glass-panel" style="padding: 1.75rem;">
+          <h4 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+            <span>📞</span> Direct Contact Lines
+          </h4>
+
+          <div style="display: flex; flex-direction: column; gap: 0.85rem; font-size: 0.9rem;">
+            <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+              <span style="color: var(--text-secondary);">Enterprise Sales Hotline:</span>
+              <strong style="color: var(--accent-primary);">+1 (800) 555-SVPMS</strong>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+              <span style="color: var(--text-secondary);">24/7 Security NOC:</span>
+              <strong>+1 (415) 889-4920</strong>
+            </div>
+
+            <div style="display: flex; justify-content: space-between;">
+              <span style="color: var(--text-secondary);">General Inquiries:</span>
+              <a href="mailto:support@svpms.io" style="font-weight: 700;">support@svpms.io</a>
+            </div>
           </div>
+        </div>
+
+        <!-- Security & Compliance Download Badge Card -->
+        <div class="glass-panel" style="padding: 1.5rem; background: var(--bg-tertiary);">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="font-size: 2rem;">🔒</div>
+            <div>
+              <div style="font-weight: 800; font-size: 0.95rem;">SOC2 Type II & GDPR Packet</div>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Request verified compliance audit reports and penetration test results.</div>
+              <a href="javascript:void(0)" id="btn-request-soc2" style="font-size: 0.8rem; font-weight: 700; color: var(--accent-primary); display: inline-block; margin-top: 0.4rem;">
+                📥 Request Security Whitepaper (PDF) ➔
+              </a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Global Offices Hub Section -->
+    <div style="margin-top: 4rem;">
+      <div class="section-header" style="text-align: center; margin-bottom: 2.5rem;">
+        <div class="badge badge-primary">Global Presence</div>
+        <h2 style="font-size: 2rem; font-weight: 800;">Our Global Operations Network</h2>
+        <p>Serving corporate headquarters and multi-tenant campuses across 4 continents.</p>
+      </div>
+
+      <div class="grid grid-3 gap-3">
+        <!-- Office 1 -->
+        <div class="office-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h4 style="font-size: 1.1rem; font-weight: 800;">🇺🇸 San Francisco (HQ)</h4>
+            <span class="badge badge-success" style="font-size: 0.7rem;">Active Hub</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            100 Cyber Security Plaza, Suite 800<br>
+            San Francisco, CA 94107, United States<br>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Timezone: PST (UTC-8)</span>
+          </p>
+        </div>
+
+        <!-- Office 2 -->
+        <div class="office-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h4 style="font-size: 1.1rem; font-weight: 800;">🇬🇧 London EMEA</h4>
+            <span class="badge badge-success" style="font-size: 0.7rem;">Active Hub</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            25 Bank Street, Canary Wharf<br>
+            London E14 5JP, United Kingdom<br>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Timezone: GMT (UTC+0)</span>
+          </p>
+        </div>
+
+        <!-- Office 3 -->
+        <div class="office-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <h4 style="font-size: 1.1rem; font-weight: 800;">🇸🇬 Singapore APAC</h4>
+            <span class="badge badge-success" style="font-size: 0.7rem;">Active Hub</span>
+          </div>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+            1 Marina Boulevard, #28-01<br>
+            One Marina Bay, Singapore 018989<br>
+            <span style="color: var(--text-muted); font-size: 0.8rem;">Timezone: SGT (UTC+8)</span>
+          </p>
         </div>
       </div>
     </div>
   </main>
 
+  <!-- Footer -->
   <footer>
-    <div class="container" style="text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
-      © 2026 SVPMS Security Systems Inc. All rights reserved. | <a href="index.html">Back to Home</a>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 2rem 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary);">
+      <div>© 2026 SVPMS Security Systems Inc. All rights reserved.</div>
+      <div style="display: flex; gap: 1.5rem;">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="features.html">Features</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="help.html">Help Center</a>
+      </div>
     </div>
   </footer>
 
   <script src="app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inquiry Pill Selectors
+      const inquiryPillBtns = document.querySelectorAll('.inquiry-pill-btn');
+      inquiryPillBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          inquiryPillBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          if (typeof showToast === 'function') {
+            showToast(`Inquiry type set to: ${btn.innerText.trim()}`, 'info');
+          }
+        });
+      });
+
+      // Live Chat Button Simulation
+      const btnStartLiveChat = document.getElementById('btn-start-live-chat');
+      if (btnStartLiveChat) {
+        btnStartLiveChat.addEventListener('click', () => {
+          if (typeof showToast === 'function') {
+            showToast('Connecting to Senior Security Advisor on Live Chat...', 'success');
+          } else {
+            alert('Connecting to Senior Security Advisor on Live Chat...');
+          }
+        });
+      }
+
+      // Request SOC2 Security Packet Simulation
+      const btnRequestSoc2 = document.getElementById('btn-request-soc2');
+      if (btnRequestSoc2) {
+        btnRequestSoc2.addEventListener('click', () => {
+          if (typeof showToast === 'function') {
+            showToast('SOC2 Type II & GDPR Compliance Whitepaper dispatched to your email!', 'success');
+          } else {
+            alert('SOC2 Type II & GDPR Compliance Whitepaper dispatched to your email!');
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
+

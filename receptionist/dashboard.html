@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Receptionist Dashboard — SVPMS</title>
+  <meta name="description" content="Smart Visitor Pass Management System — Premium Receptionist Command Center">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ─── Page-specific layout ───────────────────────────────────────── */
+    .rec-content {
+      padding: 1.5rem 1.75rem;
+      display: flex; flex-direction: column; gap: 1.5rem;
+    }
+
+    /* ─── BREADCRUMB ─────────────────────────────────────────────────── */
+    .breadcrumb {
+      display: flex; align-items: center; gap: 0.5rem;
+      font-size: 0.8rem; color: var(--text-muted);
+    }
+    .breadcrumb a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .breadcrumb span { color: var(--text-muted); }
+    .breadcrumb .current { color: var(--text-primary); font-weight: 700; }
+
+    /* ─── WELCOME BANNER ─────────────────────────────────────────────── */
+    .welcome-banner {
+      background: linear-gradient(135deg, #1E40AF 0%, #2563EB 40%, #4F46E5 80%, #7C3AED 100%);
+      border-radius: 20px; padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      position: relative; overflow: hidden;
+      box-shadow: 0 8px 32px rgba(37,99,235,0.28);
+    }
+    .welcome-banner::before {
+      content: ''; position: absolute; top: -60px; right: 80px;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: rgba(255,255,255,0.06); pointer-events: none;
+    }
+    .welcome-banner::after {
+      content: ''; position: absolute; bottom: -80px; right: 240px;
+      width: 180px; height: 180px; border-radius: 50%;
+      background: rgba(255,255,255,0.04); pointer-events: none;
+    }
+    .wb-left { position: relative; z-index: 1; }
+    .wb-greeting { font-size: 0.9rem; font-weight: 600; color: rgba(255,255,255,0.75); margin-bottom: 0.3rem; letter-spacing: 0.02em; }
+    .wb-name { font-size: 2rem; font-weight: 900; color: #fff; line-height: 1.1; margin-bottom: 0.75rem; }
+    .wb-meta { display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap; }
+    .wb-meta-item {
+      display: flex; align-items: center; gap: 0.4rem;
+      font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.8);
+      background: rgba(255,255,255,0.12); border-radius: 20px;
+      padding: 0.3rem 0.75rem; backdrop-filter: blur(4px);
+    }
+    .wb-actions { display: flex; gap: 0.75rem; margin-top: 1.25rem; flex-wrap: wrap; }
+    .wb-btn {
+      display: inline-flex; align-items: center; gap: 0.45rem;
+      padding: 0.6rem 1.2rem; border-radius: 12px; font-size: 0.85rem;
+      font-weight: 700; cursor: pointer; font-family: inherit;
+      transition: all 0.2s; text-decoration: none; border: none;
+    }
+    .wb-btn-white { background: #fff; color: var(--primary); box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+    .wb-btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .wb-btn-outline { background: rgba(255,255,255,0.15); color: #fff; border: 1.5px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); }
+    .wb-btn-outline:hover { background: rgba(255,255,255,0.25); }
+    .wb-btn-danger { background: rgba(239,68,68,0.9); color: #fff; }
+    .wb-btn-danger:hover { background: #DC2626; transform: translateY(-1px); }
+
+    .wb-right { display: flex; gap: 1.5rem; align-items: flex-start; position: relative; z-index: 1; }
+    .weather-widget {
+      background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 16px;
+      padding: 1rem 1.25rem; text-align: center; min-width: 130px;
+      color: #fff;
+    }
+    .weather-icon { font-size: 2.5rem; line-height: 1; }
+    .weather-temp { font-size: 1.75rem; font-weight: 900; }
+    .weather-label { font-size: 0.72rem; font-weight: 600; opacity: 0.8; }
+    .weather-city { font-size: 0.68rem; opacity: 0.65; margin-top: 0.25rem; }
+
+    .live-clock-widget {
+      background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2); border-radius: 16px;
+      padding: 1rem 1.25rem; text-align: center; min-width: 130px;
+      color: #fff;
+    }
+    .clock-time { font-size: 1.75rem; font-weight: 900; font-variant-numeric: tabular-nums; }
+    .clock-date { font-size: 0.72rem; font-weight: 600; opacity: 0.8; margin-top: 0.2rem; }
+    .clock-shift { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(34,197,94,0.3); border-radius: 8px; padding: 0.25rem 0.6rem; font-size: 0.68rem; font-weight: 700; margin-top: 0.5rem; }
+
+    /* ─── KPI GRID ───────────────────────────────────────────────────── */
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem;
+    }
+    @media(max-width:1400px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .kpi-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.4rem 1.5rem 1.2rem;
+      box-shadow: var(--shadow-sm); cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      position: relative; overflow: hidden;
+    }
+    .kpi-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-3px);
+    }
+    .kpi-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; border-radius: 16px 16px 0 0;
+    }
+    .kpi-card.blue::before   { background: linear-gradient(90deg, var(--primary), var(--secondary)); }
+    .kpi-card.green::before  { background: linear-gradient(90deg, #22C55E, #16A34A); }
+    .kpi-card.yellow::before { background: linear-gradient(90deg, #F59E0B, #D97706); }
+    .kpi-card.red::before    { background: linear-gradient(90deg, #EF4444, #DC2626); }
+    .kpi-card.cyan::before   { background: linear-gradient(90deg, #06B6D4, #0891B2); }
+    .kpi-card.purple::before { background: linear-gradient(90deg, #8B5CF6, #7C3AED); }
+    .kpi-card.indigo::before { background: linear-gradient(90deg, #6366F1, #4F46E5); }
+    .kpi-card.pink::before   { background: linear-gradient(90deg, #EC4899, #DB2777); }
+
+    .kpi-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+    .kpi-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.35rem;
+    }
+    .kpi-icon.blue   { background: var(--primary-light); }
+    .kpi-icon.green  { background: var(--success-light); }
+    .kpi-icon.yellow { background: var(--warning-light); }
+    .kpi-icon.red    { background: var(--danger-light); }
+    .kpi-icon.cyan   { background: var(--info-light); }
+    .kpi-icon.purple { background: #F5F3FF; }
+    .kpi-icon.indigo { background: #EEF2FF; }
+    .kpi-icon.pink   { background: #FDF2F8; }
+
+    .kpi-sparkline-wrap { width: 80px; height: 36px; }
+    .kpi-value { font-size: 2rem; font-weight: 900; color: var(--text-primary); line-height: 1; }
+    .kpi-label { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .kpi-trend {
+      display: flex; align-items: center; gap: 0.3rem;
+      font-size: 0.78rem; font-weight: 700; margin-top: 0.75rem;
+    }
+    .trend-up   { color: var(--success); }
+    .trend-down { color: var(--danger); }
+    .trend-neutral { color: var(--text-muted); }
+
+    /* ─── 2-COL LAYOUT ───────────────────────────────────────────────── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .three-col { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1.5rem; }
+    @media(max-width:1280px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+
+    /* ─── QUICK ACTIONS ──────────────────────────────────────────────── */
+    .qa-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 1rem; }
+    @media(max-width:1400px) { .qa-grid { grid-template-columns: repeat(5,1fr); } }
+    @media(max-width:1100px) { .qa-grid { grid-template-columns: repeat(3,1fr); } }
+
+    .qa-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.25rem 1rem;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 0.65rem; cursor: pointer; text-align: center;
+      transition: all 0.25s; text-decoration: none; color: inherit;
+      box-shadow: var(--shadow-sm);
+    }
+    .qa-card:hover {
+      border-color: var(--primary); background: var(--primary-light);
+      transform: translateY(-4px); box-shadow: 0 12px 32px var(--primary-glow);
+    }
+    .qa-icon {
+      width: 54px; height: 54px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+      transition: transform 0.2s;
+    }
+    .qa-card:hover .qa-icon { transform: scale(1.1); }
+    .qa-label { font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); }
+    .qa-card:hover .qa-label { color: var(--primary); }
+
+    /* ─── SECTION HEADER ─────────────────────────────────────────────── */
+    .section-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: 1.05rem; font-weight: 800; color: var(--text-primary);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .section-subtitle { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; margin-top: 0.15rem; }
+
+    /* ─── TABLE CONTAINER ────────────────────────────────────────────── */
+    .table-container { overflow-x: auto; border-radius: var(--radius-md); }
+    .table-toolbar {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1rem; flex-wrap: wrap;
+    }
+    .table-toolbar-right { margin-left: auto; display: flex; gap: 0.75rem; }
+
+    /* ─── STATUS DOT ─────────────────────────────────────────────────── */
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px; }
+    .dot-green  { background: var(--success); box-shadow: 0 0 6px var(--success); }
+    .dot-yellow { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
+    .dot-red    { background: var(--danger);  box-shadow: 0 0 6px var(--danger); }
+    .dot-gray   { background: var(--text-muted); }
+    .dot-blue   { background: var(--primary); box-shadow: 0 0 6px var(--primary-glow); }
+
+    /* ─── APPROVAL CARDS ─────────────────────────────────────────────── */
+    .approval-card {
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.25rem;
+      display: flex; align-items: center; gap: 1rem;
+      transition: var(--transition); box-shadow: var(--shadow-sm);
+    }
+    .approval-card:hover { border-color: var(--warning); box-shadow: 0 0 0 3px var(--warning-light); }
+    .waiting-chip {
+      background: var(--danger-light); color: var(--danger);
+      font-size: 0.7rem; font-weight: 800; padding: 0.2rem 0.5rem;
+      border-radius: 8px; white-space: nowrap;
+    }
+
+    /* ─── LIVE VISITOR CARDS ─────────────────────────────────────────── */
+    .live-visitor {
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 0.85rem; border-radius: var(--radius-md);
+      border: 1.5px solid var(--border); background: var(--bg);
+      transition: var(--transition);
+    }
+    .live-visitor:hover { border-color: var(--success); background: var(--success-light); }
+    .live-dot {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--success);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.2);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { box-shadow: 0 0 0 3px rgba(34,197,94,0.2); }
+      50% { box-shadow: 0 0 0 8px rgba(34,197,94,0.06); }
+    }
+
+    /* ─── ACTIVITY TIMELINE ──────────────────────────────────────────── */
+    .timeline { display: flex; flex-direction: column; gap: 0; }
+    .tl-item {
+      display: flex; gap: 0.85rem; position: relative;
+      padding-bottom: 1.1rem;
+    }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-item:last-child .tl-line { display: none; }
+    .tl-dot-wrap { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+    .tl-dot {
+      width: 34px; height: 34px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; flex-shrink: 0; border: 2px solid var(--card);
+      box-shadow: var(--shadow-sm);
+    }
+    .tl-line { width: 2px; flex: 1; background: var(--border); margin-top: 0.35rem; }
+    .tl-body { flex: 1; }
+    .tl-action { font-size: 0.845rem; font-weight: 700; color: var(--text-primary); }
+    .tl-meta   { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.1rem; }
+
+    /* ─── UPCOMING VISITS ────────────────────────────────────────────── */
+    .upcoming-item {
+      display: flex; align-items: center; gap: 0.85rem; padding: 0.85rem;
+      border-radius: var(--radius-md); border: 1.5px solid var(--border);
+      background: var(--bg); transition: var(--transition);
+    }
+    .upcoming-item:hover { border-color: var(--primary); background: var(--primary-light); }
+    .upcoming-time {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff; border-radius: var(--radius-md); padding: 0.6rem 0.75rem;
+      text-align: center; min-width: 58px; flex-shrink: 0;
+    }
+    .upt-hour { font-size: 1rem; font-weight: 900; }
+    .upt-ampm { font-size: 0.6rem; font-weight: 700; opacity: 0.85; }
+
+    /* ─── CHART GRID ─────────────────────────────────────────────────── */
+    .chart-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1.25rem; }
+    @media(max-width:1400px) { .chart-grid { grid-template-columns: 1fr 1fr; } }
+    @media(max-width:900px)  { .chart-grid { grid-template-columns: 1fr; } }
+
+    /* ─── NOTIFICATION LIST ──────────────────────────────────────────── */
+    .notif-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.85rem; border-radius: var(--radius-md);
+      border-bottom: 1px solid var(--border); transition: var(--transition);
+    }
+    .notif-item:last-child { border-bottom: none; }
+    .notif-item:hover { background: var(--bg); }
+    .notif-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.95rem; flex-shrink: 0;
+    }
+
+    /* ─── MINI CALENDAR ──────────────────────────────────────────────── */
+    .mini-cal { padding: 0; }
+    .cal-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 0.75rem;
+    }
+    .cal-month { font-size: 0.9rem; font-weight: 800; }
+    .cal-nav {
+      width: 28px; height: 28px; border-radius: 8px;
+      border: 1.5px solid var(--border); background: transparent;
+      color: var(--text-secondary); cursor: pointer; display: flex;
+      align-items: center; justify-content: center; font-size: 0.85rem;
+      transition: var(--transition);
+    }
+    .cal-nav:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+    .cal-day-name { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-align: center; padding: 0.3rem 0; text-transform: uppercase; }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 600; border-radius: 8px; cursor: pointer;
+      transition: var(--transition); color: var(--text-secondary);
+    }
+    .cal-day:hover { background: var(--primary-light); color: var(--primary); }
+    .cal-day.today { background: var(--primary); color: #fff; font-weight: 900; box-shadow: 0 4px 12px var(--primary-glow); }
+    .cal-day.has-event::after {
+      content: ''; width: 4px; height: 4px; border-radius: 50%;
+      background: var(--danger); position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+    }
+    .cal-day { position: relative; }
+    .cal-day.other-month { color: var(--border); }
+
+    /* ─── QUICK NOTES ────────────────────────────────────────────────── */
+    .notes-area {
+      width: 100%; min-height: 90px; resize: vertical;
+      border: 1.5px solid var(--border); border-radius: var(--radius-md);
+      background: var(--bg); color: var(--text-primary);
+      font-size: 0.845rem; font-family: inherit; padding: 0.75rem;
+      outline: none; transition: var(--transition);
+    }
+    .notes-area:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+
+    /* ─── CHECKLIST ──────────────────────────────────────────────────── */
+    .checklist-item {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.5rem 0; border-bottom: 1px solid var(--border);
+    }
+    .checklist-item:last-child { border-bottom: none; }
+    .checklist-item input[type="checkbox"] { accent-color: var(--primary); width: 16px; height: 16px; cursor: pointer; }
+    .checklist-item label { font-size: 0.83rem; font-weight: 500; color: var(--text-secondary); cursor: pointer; flex: 1; }
+    .checklist-item input:checked + label { text-decoration: line-through; color: var(--text-muted); }
+
+    /* ─── EMERGENCY CONTACTS ─────────────────────────────────────────── */
+    .emg-item {
+      display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem;
+      border-radius: var(--radius-md); border: 1.5px solid var(--border);
+      background: var(--bg); transition: var(--transition);
+    }
+    .emg-item:hover { border-color: var(--danger); background: var(--danger-light); }
+    .emg-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; background: var(--danger-light); flex-shrink: 0; }
+
+    /* ─── FOOTER ─────────────────────────────────────────────────────── */
+    .rec-footer { margin-top: auto; }
+
+    /* ─── MODAL ──────────────────────────────────────────────────────── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,23,42,0.7); backdrop-filter: blur(6px);
+      z-index: 9999; align-items: center; justify-content: center; padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--card); border-radius: var(--radius-xl);
+      width: 100%; max-width: 560px; padding: 2rem;
+      box-shadow: var(--shadow-xl); animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn { from { transform: scale(0.96) translateY(8px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+    .modal-title { font-size: 1.2rem; font-weight: 800; margin-bottom: 0.25rem; }
+    .modal-sub   { font-size: 0.83rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+    .form-group  { margin-bottom: 1rem; }
+    .form-label  { display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.04em; }
+
+    /* ─── QR PREVIEW ─────────────────────────────────────────────────── */
+    .qr-preview {
+      width: 80px; height: 80px; background: #fff; border: 1.5px solid var(--border);
+      border-radius: var(--radius-md); padding: 6px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .qr-preview svg { width: 100%; height: 100%; }
+
+    /* ─── PAGINATION ─────────────────────────────────────────────────── */
+    .pagination { display: flex; align-items: center; gap: 0.4rem; }
+    .page-btn {
+      width: 34px; height: 34px; border-radius: 8px; display: flex;
+      align-items: center; justify-content: center; font-size: 0.82rem;
+      font-weight: 700; cursor: pointer; border: 1.5px solid var(--border);
+      background: var(--card); color: var(--text-secondary); transition: var(--transition);
+    }
+    .page-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+    .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* ─── VISITOR PHOTO ──────────────────────────────────────────────── */
+    .visitor-photo {
+      width: 36px; height: 36px; border-radius: 10px; object-fit: cover;
+      background: linear-gradient(135deg, #6366F1, #4F46E5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.78rem; font-weight: 800; color: #fff; flex-shrink: 0;
+    }
+
+    /* ─── RIGHT WIDGETS ──────────────────────────────────────────────── */
+    .right-widgets { display: flex; flex-direction: column; gap: 1.25rem; min-width: 300px; max-width: 320px; }
+    .main-and-widgets { display: flex; gap: 1.5rem; align-items: flex-start; }
+    .main-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1.5rem; }
+  </style>
+</head>
+<body class="rec-body">
+  <!-- Shell injected by receptionist-shared.js -->
+  <header class="rec-header"></header>
+  <aside class="rec-sidebar" id="rec-sidebar"></aside>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ MAIN WRAPPER ━━━━━━━━━━━━━━━ -->
+  <div class="rec-main">
+    <div class="rec-content">
+
+      <!-- ── BREADCRUMB ──────────────────────────────────────────────── -->
+      <div class="breadcrumb">
+        <a href="dashboard.html">🏠 Home</a>
+        <span>›</span>
+        <span class="current">Receptionist Dashboard</span>
+      </div>
+
+      <!-- ── WELCOME BANNER ──────────────────────────────────────────── -->
+      <div class="welcome-banner">
+        <div class="wb-left">
+          <div class="wb-greeting">👋 Good Morning,</div>
+          <div class="wb-name">Sophia Adeyemi</div>
+          <div class="wb-meta">
+            <span class="wb-meta-item">📅 Wednesday, Aug 6, 2026</span>
+            <span class="wb-meta-item">🖥️ Desk #R-04</span>
+            <span class="wb-meta-item">⏰ Morning Shift · 8:00 AM – 4:00 PM</span>
+          </div>
+          <div class="wb-actions">
+            <button class="wb-btn wb-btn-white" onclick="document.getElementById('register-modal').classList.add('open')">
+              ➕ Register Visitor
+            </button>
+            <button class="wb-btn wb-btn-outline">🔳 Scan QR Pass</button>
+            <button class="wb-btn wb-btn-danger">🚨 Emergency</button>
+          </div>
+        </div>
+        <div class="wb-right">
+          <div class="weather-widget">
+            <div class="weather-icon">🌤️</div>
+            <div class="weather-temp">28°C</div>
+            <div class="weather-label">Partly Cloudy</div>
+            <div class="weather-city">Mumbai, IN</div>
+          </div>
+          <div class="live-clock-widget">
+            <div class="clock-time" id="banner-clock">09:14</div>
+            <div class="clock-date" id="banner-date">Wed, Aug 6</div>
+            <div style="margin-top:0.5rem;"><div class="clock-shift">🟢 Morning Shift</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── KPI CARDS ───────────────────────────────────────────────── -->
+      <div class="kpi-grid">
+        <!-- 1. Today's Visitors -->
+        <div class="kpi-card blue" onclick="">
+          <div class="kpi-top">
+            <div class="kpi-icon blue">👥</div>
+            <div class="kpi-sparkline-wrap"><canvas id="spark1"></canvas></div>
+          </div>
+          <div class="kpi-value count-anim">265</div>
+          <div class="kpi-label">Today's Visitors</div>
+          <div class="kpi-trend trend-up">▲ 12.4% vs yesterday</div>
+        </div>
+        <!-- 2. Checked In -->
+        <div class="kpi-card green">
+          <div class="kpi-top">
+            <div class="kpi-icon green">✅</div>
+            <div class="kpi-sparkline-wrap"><canvas id="spark2"></canvas></div>
+          </div>
+          <div class="kpi-value count-anim">84</div>
+          <div class="kpi-label">Checked In (Active)</div>
+          <div class="kpi-trend trend-up">▲ 8.2% from last week</div>
+        </div>
+        <!-- 3. Checked Out -->
+        <div class="kpi-card cyan">
+          <div class="kpi-top">
+            <div class="kpi-icon cyan">🚪</div>
+            <div class="kpi-sparkline-wrap"><canvas id="spark3"></canvas></div>
+          </div>
+          <div class="kpi-value count-anim">181</div>
+          <div class="kpi-label">Checked Out</div>
+          <div class="kpi-trend trend-neutral">→ Stable vs yesterday</div>
+        </div>
+        <!-- 4. Pending Approvals -->
+        <div class="kpi-card yellow">
+          <div class="kpi-top">
+            <div class="kpi-icon yellow">⏳</div>
+            <div class="kpi-sparkline-wrap"><canvas id="spark4"></canvas></div>
+          </div>
+          <div class="kpi-value count-anim">17</div>
+          <div class="kpi-label">Pending Approvals</div>
+          <div class="kpi-trend trend-down">▼ 5 unresponded &gt; 15 min</div>
+        </div>
+        <!-- 5. Walk-In -->
+        <div class="kpi-card purple">
+          <div class="kpi-top">
+            <div class="kpi-icon purple">🚶</div>
+            <div class="kpi-sparkline-wrap"><canvas id="spark5"></canvas></div>
+          </div>
+          <div class="kpi-value count-anim">38</div>
+          <div class="kpi-label">Walk-In Visitors</div>
+          <div class="kpi-trend trend-up">▲ 6.1% vs yesterday</div>
+        </div>
+        <!-- 6. Pre-Registered -->
+        <div class="kpi-card indigo">
+          <div class="kpi-top">
+            <div class="kpi-icon indigo">📋</div>
+            <div class="kpi-sparkline-wrap"><canvas id="spark6"></canvas></div>
+          </div>
+          <div class="kpi-value count-anim">227</div>
+          <div class="kpi-label">Pre-Registered</div>
+          <div class="kpi-trend trend-up">▲ 18.3% growth</div>
+        </div>
+        <!-- 7. QR Passes -->
+        <div class="kpi-card red">
+          <div class="kpi-top">
+            <div class="kpi-icon red">🔳</div>
+            <div class="kpi-sparkline-wrap"><canvas id="spark7"></canvas></div>
+          </div>
+          <div class="kpi-value count-anim">242</div>
+          <div class="kpi-label">QR Passes Generated</div>
+          <div class="kpi-trend trend-up">▲ 9.7% today</div>
+        </div>
+        <!-- 8. Badges Printed -->
+        <div class="kpi-card pink">
+          <div class="kpi-top">
+            <div class="kpi-icon pink">🖨️</div>
+            <div class="kpi-sparkline-wrap"><canvas id="spark8"></canvas></div>
+          </div>
+          <div class="kpi-value count-anim">198</div>
+          <div class="kpi-label">Badges Printed Today</div>
+          <div class="kpi-trend trend-up">▲ 3.2% vs yesterday</div>
+        </div>
+      </div>
+
+      <!-- ── QUICK ACTIONS ────────────────────────────────────────────── -->
+      <div class="r-card" style="padding:1.5rem;">
+        <div class="section-hdr" style="margin-bottom:1.25rem;">
+          <div>
+            <div class="section-title">⚡ Quick Actions</div>
+            <div class="section-subtitle">One-click shortcuts for common tasks</div>
+          </div>
+        </div>
+        <div class="qa-grid">
+          <a href="register.html" class="qa-card">
+            <div class="qa-icon" style="background:var(--primary-light);">➕</div>
+            <div class="qa-label">Register Visitor</div>
+          </a>
+          <a href="walkin.html" class="qa-card">
+            <div class="qa-icon" style="background:#F5F3FF;">🚶</div>
+            <div class="qa-label">Walk-In Visitor</div>
+          </a>
+          <a href="photo.html" class="qa-card">
+            <div class="qa-icon" style="background:#F0FDF4;">📷</div>
+            <div class="qa-label">Capture Photo</div>
+          </a>
+          <a href="upload-id.html" class="qa-card">
+            <div class="qa-icon" style="background:#ECFEFF;">🪪</div>
+            <div class="qa-label">Upload ID Proof</div>
+          </a>
+          <a href="assign-host.html" class="qa-card">
+            <div class="qa-icon" style="background:#FFFBEB;">🤝</div>
+            <div class="qa-label">Assign Host</div>
+          </a>
+          <a href="generate-qr.html" class="qa-card">
+            <div class="qa-icon" style="background:var(--danger-light);">🔳</div>
+            <div class="qa-label">Generate QR Pass</div>
+          </a>
+          <a href="print-badge.html" class="qa-card">
+            <div class="qa-icon" style="background:#FDF2F8;">🖨️</div>
+            <div class="qa-label">Print Badge</div>
+          </a>
+          <a href="visitor-list.html" class="qa-card">
+            <div class="qa-icon" style="background:#EEF2FF;">🔍</div>
+            <div class="qa-label">Search Visitor</div>
+          </a>
+          <a href="today.html" class="qa-card">
+            <div class="qa-icon" style="background:#F0FDF4;">📅</div>
+            <div class="qa-label">Today's Visitors</div>
+          </a>
+          <a href="upcoming.html" class="qa-card">
+            <div class="qa-icon" style="background:#FFFBEB;">⏰</div>
+            <div class="qa-label">Upcoming Visits</div>
+          </a>
+        </div>
+      </div>
+
+      <!-- ── MAIN + RIGHT WIDGETS LAYOUT ────────────────────────────── -->
+      <div class="main-and-widgets">
+
+        <!-- LEFT MAIN COLUMN -->
+        <div class="main-col">
+
+          <!-- ── TODAY'S VISITORS TABLE ──────────────────────────────── -->
+          <div class="r-card" style="padding:1.5rem;">
+            <div class="section-hdr">
+              <div>
+                <div class="section-title">📋 Today's Visitors</div>
+                <div class="section-subtitle">265 total · 84 currently on-site · Last updated 2 mins ago</div>
+              </div>
+              <div style="display:flex;gap:0.5rem;">
+                <button class="btn btn-outline btn-sm">📥 Export CSV</button>
+                <button class="btn btn-primary btn-sm" onclick="document.getElementById('register-modal').classList.add('open')">➕ Register</button>
+              </div>
+            </div>
+
+            <div class="table-toolbar">
+              <div style="position:relative;flex:1;max-width:320px;">
+                <span style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.85rem;">🔍</span>
+                <input type="text" class="form-input" placeholder="Search visitors…" style="padding-left:2.2rem;">
+              </div>
+              <select class="form-input" style="width:160px;">
+                <option>All Statuses</option>
+                <option>Checked In</option>
+                <option>Checked Out</option>
+                <option>Pending</option>
+                <option>Approved</option>
+              </select>
+              <select class="form-input" style="width:150px;">
+                <option>All Departments</option>
+                <option>Engineering</option>
+                <option>Finance</option>
+                <option>Sales</option>
+                <option>Executive</option>
+              </select>
+            </div>
+
+            <div class="table-container">
+              <table class="r-table">
+                <thead>
+                  <tr>
+                    <th>Photo</th>
+                    <th>Visitor Name ↕</th>
+                    <th>Company</th>
+                    <th>Host</th>
+                    <th>Department</th>
+                    <th>Purpose</th>
+                    <th>Visit Time</th>
+                    <th>Status</th>
+                    <th>QR</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><div class="visitor-photo" style="background:linear-gradient(135deg,#6366F1,#4F46E5);">ER</div></td>
+                    <td><div style="font-weight:700;color:var(--text-primary);">Elena Rostova</div><div style="font-size:0.72rem;color:var(--text-muted);">elena.r@amazon.com</div></td>
+                    <td>AWS Cloud</td>
+                    <td>Marcus Vance</td>
+                    <td><span class="badge badge-blue">Engineering</span></td>
+                    <td>Cloud Audit</td>
+                    <td>09:15 AM</td>
+                    <td><span class="badge badge-green"><span class="status-dot dot-green"></span>On Site</span></td>
+                    <td><div class="qr-preview"><svg viewBox="0 0 21 21" fill="none"><rect width="9" height="9" fill="#0F172A"/><rect x="12" width="9" height="9" fill="#0F172A"/><rect y="12" width="9" height="9" fill="#0F172A"/><rect x="1" y="1" width="7" height="7" fill="white"/><rect x="13" y="1" width="7" height="7" fill="white"/><rect x="1" y="13" width="7" height="7" fill="white"/><rect x="3" y="3" width="3" height="3" fill="#0F172A"/><rect x="15" y="3" width="3" height="3" fill="#0F172A"/><rect x="3" y="15" width="3" height="3" fill="#0F172A"/><rect x="12" y="12" width="3" height="3" fill="#0F172A"/><rect x="15" y="15" width="3" height="3" fill="#0F172A"/></svg></div></td>
+                    <td>
+                      <div style="display:flex;gap:0.3rem;flex-wrap:nowrap;">
+                        <button class="btn btn-xs btn-outline">👁</button>
+                        <button class="btn btn-xs btn-outline">✏️</button>
+                        <button class="btn btn-xs btn-primary">Check Out</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><div class="visitor-photo" style="background:linear-gradient(135deg,#F59E0B,#D97706);">DM</div></td>
+                    <td><div style="font-weight:700;color:var(--text-primary);">David K. Miller</div><div style="font-size:0.72rem;color:var(--text-muted);">david.m@kpmg.com</div></td>
+                    <td>KPMG Advisory</td>
+                    <td>Sophia Patel</td>
+                    <td><span class="badge badge-yellow">Finance</span></td>
+                    <td>SOC2 Review</td>
+                    <td>09:42 AM</td>
+                    <td><span class="badge badge-green"><span class="status-dot dot-green"></span>On Site</span></td>
+                    <td><div class="qr-preview"><svg viewBox="0 0 21 21" fill="none"><rect width="9" height="9" fill="#0F172A"/><rect x="12" width="9" height="9" fill="#0F172A"/><rect y="12" width="9" height="9" fill="#0F172A"/><rect x="1" y="1" width="7" height="7" fill="white"/><rect x="13" y="1" width="7" height="7" fill="white"/><rect x="1" y="13" width="7" height="7" fill="white"/><rect x="3" y="3" width="3" height="3" fill="#0F172A"/><rect x="15" y="3" width="3" height="3" fill="#0F172A"/><rect x="3" y="15" width="3" height="3" fill="#0F172A"/></svg></div></td>
+                    <td>
+                      <div style="display:flex;gap:0.3rem;">
+                        <button class="btn btn-xs btn-outline">👁</button>
+                        <button class="btn btn-xs btn-outline">✏️</button>
+                        <button class="btn btn-xs btn-primary">Check Out</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><div class="visitor-photo" style="background:linear-gradient(135deg,#22C55E,#16A34A);">PS</div></td>
+                    <td><div style="font-weight:700;color:var(--text-primary);">Priya Sharma</div><div style="font-size:0.72rem;color:var(--text-muted);">priya.s@stripe.com</div></td>
+                    <td>Stripe Financial</td>
+                    <td>David Sterling</td>
+                    <td><span class="badge badge-blue">Product Tech</span></td>
+                    <td>API Integration</td>
+                    <td>10:14 AM</td>
+                    <td><span class="badge badge-yellow"><span class="status-dot dot-yellow"></span>Pending</span></td>
+                    <td><div style="width:36px;height:36px;background:var(--warning-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.8rem;">⏳</div></td>
+                    <td>
+                      <div style="display:flex;gap:0.3rem;">
+                        <button class="btn btn-xs btn-success">✓ Approve</button>
+                        <button class="btn btn-xs btn-outline" style="color:var(--danger);border-color:var(--danger);">✕</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><div class="visitor-photo" style="background:linear-gradient(135deg,#06B6D4,#0891B2);">HT</div></td>
+                    <td><div style="font-weight:700;color:var(--text-primary);">Hana Tanaka</div><div style="font-size:0.72rem;color:var(--text-muted);">h.tanaka@google.com</div></td>
+                    <td>Google Cloud</td>
+                    <td>Claire Harrison</td>
+                    <td><span class="badge badge-cyan">Executive</span></td>
+                    <td>Partnership</td>
+                    <td>10:28 AM</td>
+                    <td><span class="badge badge-green"><span class="status-dot dot-green"></span>On Site</span></td>
+                    <td><div class="qr-preview"><svg viewBox="0 0 21 21" fill="none"><rect width="9" height="9" fill="#0F172A"/><rect x="12" width="9" height="9" fill="#0F172A"/><rect y="12" width="9" height="9" fill="#0F172A"/><rect x="1" y="1" width="7" height="7" fill="white"/><rect x="13" y="1" width="7" height="7" fill="white"/><rect x="1" y="13" width="7" height="7" fill="white"/><rect x="3" y="3" width="3" height="3" fill="#0F172A"/><rect x="15" y="3" width="3" height="3" fill="#0F172A"/><rect x="3" y="15" width="3" height="3" fill="#0F172A"/></svg></div></td>
+                    <td>
+                      <div style="display:flex;gap:0.3rem;">
+                        <button class="btn btn-xs btn-outline">👁</button>
+                        <button class="btn btn-xs btn-outline">🖨️</button>
+                        <button class="btn btn-xs btn-primary">Check Out</button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><div class="visitor-photo" style="background:linear-gradient(135deg,#EC4899,#DB2777);">MW</div></td>
+                    <td><div style="font-weight:700;color:var(--text-primary);">Marcus Webb</div><div style="font-size:0.72rem;color:var(--text-muted);">m.webb@mckinsey.com</div></td>
+                    <td>McKinsey &amp; Co.</td>
+                    <td>Raj Nair</td>
+                    <td><span class="badge badge-cyan">Strategy</span></td>
+                    <td>Consulting</td>
+                    <td>08:55 AM</td>
+                    <td><span class="badge badge-gray"><span class="status-dot dot-gray"></span>Checked Out</span></td>
+                    <td><div class="qr-preview"><svg viewBox="0 0 21 21" fill="none"><rect width="9" height="9" fill="#0F172A"/><rect x="12" width="9" height="9" fill="#0F172A"/><rect y="12" width="9" height="9" fill="#0F172A"/><rect x="1" y="1" width="7" height="7" fill="white"/><rect x="13" y="1" width="7" height="7" fill="white"/><rect x="1" y="13" width="7" height="7" fill="white"/><rect x="3" y="3" width="3" height="3" fill="#0F172A"/><rect x="15" y="3" width="3" height="3" fill="#0F172A"/><rect x="3" y="15" width="3" height="3" fill="#0F172A"/></svg></div></td>
+                    <td>
+                      <div style="display:flex;gap:0.3rem;">
+                        <button class="btn btn-xs btn-outline">👁</button>
+                        <button class="btn btn-xs btn-outline">🖨️</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);">
+              <div style="font-size:0.8rem;color:var(--text-muted);">Showing 1–5 of 265 visitors</div>
+              <div class="pagination">
+                <button class="page-btn">‹</button>
+                <button class="page-btn active">1</button>
+                <button class="page-btn">2</button>
+                <button class="page-btn">3</button>
+                <span style="font-size:0.8rem;color:var(--text-muted);">…</span>
+                <button class="page-btn">53</button>
+                <button class="page-btn">›</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── PENDING APPROVALS + LIVE VISITORS ───────────────────── -->
+          <div class="two-col">
+
+            <!-- PENDING APPROVALS -->
+            <div class="r-card" style="padding:1.5rem;">
+              <div class="section-hdr">
+                <div>
+                  <div class="section-title">⏳ Pending Host Approvals</div>
+                  <div class="section-subtitle">5 awaiting response · 2 urgent (&gt;15 min)</div>
+                </div>
+                <span class="badge badge-red">5 Pending</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:0.85rem;">
+                <div class="approval-card">
+                  <div class="visitor-photo" style="background:linear-gradient(135deg,#22C55E,#16A34A);width:46px;height:46px;border-radius:14px;font-size:0.9rem;">PS</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:800;font-size:0.9rem;">Priya Sharma</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);">Host: <strong style="color:var(--text-secondary);">David Sterling</strong> · API Integration · 10:14 AM</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.15rem;">Stripe Financial · Product Tech Dept</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;flex-shrink:0;">
+                    <span class="waiting-chip">22 min wait</span>
+                    <div style="display:flex;gap:0.35rem;">
+                      <button class="btn btn-xs btn-success">✓ Approve</button>
+                      <button class="btn btn-xs btn-danger">✕</button>
+                      <button class="btn btn-xs btn-outline">📞</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="approval-card">
+                  <div class="visitor-photo" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);width:46px;height:46px;border-radius:14px;font-size:0.9rem;">MR</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:800;font-size:0.9rem;">Marco Russo</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);">Host: <strong style="color:var(--text-secondary);">Sarah Chen</strong> · CRM Demo · 11:05 AM</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.15rem;">Salesforce · Sales Ops</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;flex-shrink:0;">
+                    <span class="waiting-chip" style="background:var(--warning-light);color:var(--warning);">8 min wait</span>
+                    <div style="display:flex;gap:0.35rem;">
+                      <button class="btn btn-xs btn-success">✓ Approve</button>
+                      <button class="btn btn-xs btn-danger">✕</button>
+                      <button class="btn btn-xs btn-outline">📞</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="approval-card">
+                  <div class="visitor-photo" style="background:linear-gradient(135deg,#F59E0B,#D97706);width:46px;height:46px;border-radius:14px;font-size:0.9rem;">LK</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:800;font-size:0.9rem;">Liu Ke</div>
+                    <div style="font-size:0.75rem;color:var(--text-muted);">Host: <strong style="color:var(--text-secondary);">Raj Nair</strong> · Board Meeting · 11:30 AM</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.15rem;">Alibaba Cloud · Executive Suite</div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;align-items:flex-end;gap:0.4rem;flex-shrink:0;">
+                    <span class="waiting-chip" style="background:var(--success-light);color:var(--success);">3 min wait</span>
+                    <div style="display:flex;gap:0.35rem;">
+                      <button class="btn btn-xs btn-success">✓ Approve</button>
+                      <button class="btn btn-xs btn-danger">✕</button>
+                      <button class="btn btn-xs btn-outline">📞</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-full" style="margin-top:1rem;font-size:0.82rem;">View All 5 Approvals →</button>
+            </div>
+
+            <!-- LIVE VISITORS -->
+            <div class="r-card" style="padding:1.5rem;">
+              <div class="section-hdr">
+                <div>
+                  <div class="section-title">🟢 Live Visitors On-Site</div>
+                  <div class="section-subtitle">84 currently inside the building</div>
+                </div>
+                <span class="badge badge-green">84 Active</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:0.65rem;max-height:360px;overflow-y:auto;">
+                <div class="live-visitor">
+                  <div class="live-dot"></div>
+                  <div class="visitor-photo" style="background:linear-gradient(135deg,#6366F1,#4F46E5);width:38px;height:38px;">ER</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.845rem;">Elena Rostova</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">Host: Marcus Vance · Gate A</div>
+                  </div>
+                  <div style="text-align:right;flex-shrink:0;">
+                    <div style="font-size:0.78rem;font-weight:700;color:var(--success);">2h 14m</div>
+                    <button class="btn btn-xs btn-outline" style="margin-top:0.2rem;">Exit</button>
+                  </div>
+                </div>
+                <div class="live-visitor">
+                  <div class="live-dot"></div>
+                  <div class="visitor-photo" style="background:linear-gradient(135deg,#F59E0B,#D97706);width:38px;height:38px;">DM</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.845rem;">David K. Miller</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">Host: Sophia Patel · Gate B</div>
+                  </div>
+                  <div style="text-align:right;flex-shrink:0;">
+                    <div style="font-size:0.78rem;font-weight:700;color:var(--success);">1h 47m</div>
+                    <button class="btn btn-xs btn-outline" style="margin-top:0.2rem;">Exit</button>
+                  </div>
+                </div>
+                <div class="live-visitor">
+                  <div class="live-dot"></div>
+                  <div class="visitor-photo" style="background:linear-gradient(135deg,#06B6D4,#0891B2);width:38px;height:38px;">HT</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.845rem;">Hana Tanaka</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">Host: Claire Harrison · Exec Lift</div>
+                  </div>
+                  <div style="text-align:right;flex-shrink:0;">
+                    <div style="font-size:0.78rem;font-weight:700;color:var(--warning);">1h 01m</div>
+                    <button class="btn btn-xs btn-outline" style="margin-top:0.2rem;">Exit</button>
+                  </div>
+                </div>
+                <div class="live-visitor">
+                  <div class="live-dot"></div>
+                  <div class="visitor-photo" style="background:linear-gradient(135deg,#22C55E,#16A34A);width:38px;height:38px;">AN</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.845rem;">Ayesha Nair</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">Host: Dev Mehta · Gate A</div>
+                  </div>
+                  <div style="text-align:right;flex-shrink:0;">
+                    <div style="font-size:0.78rem;font-weight:700;color:var(--success);">0h 38m</div>
+                    <button class="btn btn-xs btn-outline" style="margin-top:0.2rem;">Exit</button>
+                  </div>
+                </div>
+                <div class="live-visitor">
+                  <div class="live-dot"></div>
+                  <div class="visitor-photo" style="background:linear-gradient(135deg,#8B5CF6,#7C3AED);width:38px;height:38px;">JL</div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.845rem;">James Liu</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">Host: Sarah Chen · Gate C</div>
+                  </div>
+                  <div style="text-align:right;flex-shrink:0;">
+                    <div style="font-size:0.78rem;font-weight:700;color:var(--success);">0h 22m</div>
+                    <button class="btn btn-xs btn-outline" style="margin-top:0.2rem;">Exit</button>
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-full" style="margin-top:1rem;font-size:0.82rem;">View All 84 Live Visitors →</button>
+            </div>
+          </div>
+
+          <!-- ── ANALYTICS CHARTS ─────────────────────────────────────── -->
+          <div class="r-card" style="padding:1.5rem;">
+            <div class="section-hdr">
+              <div>
+                <div class="section-title">📈 Visitor Analytics</div>
+                <div class="section-subtitle">Real-time visitor flow data and trends</div>
+              </div>
+              <div style="display:flex;gap:0.5rem;">
+                <button class="btn btn-outline btn-sm">Today</button>
+                <button class="btn btn-primary btn-sm">Week</button>
+                <button class="btn btn-outline btn-sm">Month</button>
+              </div>
+            </div>
+            <div class="chart-grid">
+              <div>
+                <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">Hourly Visitor Flow</div>
+                <div style="height:200px;"><canvas id="hourlyChart"></canvas></div>
+              </div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">Visitor Type Distribution</div>
+                <div style="height:200px;"><canvas id="typeChart"></canvas></div>
+              </div>
+              <div>
+                <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin-bottom:0.75rem;text-transform:uppercase;letter-spacing:0.05em;">Department Visits</div>
+                <div style="height:200px;"><canvas id="deptChart"></canvas></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── RECENT ACTIVITY + UPCOMING VISITS ──────────────────── -->
+          <div class="two-col">
+            <!-- RECENT ACTIVITY -->
+            <div class="r-card" style="padding:1.5rem;">
+              <div class="section-hdr">
+                <div class="section-title">🕐 Recent Activity</div>
+                <button class="btn btn-outline btn-sm">View All</button>
+              </div>
+              <div class="timeline">
+                <div class="tl-item">
+                  <div class="tl-dot-wrap">
+                    <div class="tl-dot" style="background:var(--primary-light);">➕</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-body">
+                    <div class="tl-action">Visitor Registered — Elena Rostova</div>
+                    <div class="tl-meta">By Sophia Adeyemi · 09:10 AM · Main Lobby Kiosk A</div>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot-wrap">
+                    <div class="tl-dot" style="background:#F0FDF4;">📷</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-body">
+                    <div class="tl-action">Photo Captured — Elena Rostova</div>
+                    <div class="tl-meta">Face ID verified · 09:11 AM</div>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot-wrap">
+                    <div class="tl-dot" style="background:#F5F3FF;">✅</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-body">
+                    <div class="tl-action">Host Approved — Marcus Vance approved</div>
+                    <div class="tl-meta">Via Slack notification · 09:13 AM</div>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot-wrap">
+                    <div class="tl-dot" style="background:var(--danger-light);">🔳</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-body">
+                    <div class="tl-action">QR Pass Generated — Pass #V-8942</div>
+                    <div class="tl-meta">Sent via SMS to +91 98765 XXXXX · 09:13 AM</div>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot-wrap">
+                    <div class="tl-dot" style="background:#FDF2F8;">🖨️</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-body">
+                    <div class="tl-action">Badge Printed — Elena Rostova</div>
+                    <div class="tl-meta">Zebra ZD421 · Main Lobby · 09:14 AM</div>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot-wrap">
+                    <div class="tl-dot" style="background:var(--success-light);">🚪</div>
+                    <div class="tl-line"></div>
+                  </div>
+                  <div class="tl-body">
+                    <div class="tl-action">Checked In — Elena Rostova scanned at Gate A</div>
+                    <div class="tl-meta">Biometric confirmed · 09:15 AM</div>
+                  </div>
+                </div>
+                <div class="tl-item">
+                  <div class="tl-dot-wrap">
+                    <div class="tl-dot" style="background:#E2E8F0;">🚪</div>
+                  </div>
+                  <div class="tl-body">
+                    <div class="tl-action">Checked Out — Marcus Webb departed</div>
+                    <div class="tl-meta">Gate A · Duration: 1h 45m · 10:40 AM</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- UPCOMING VISITS -->
+            <div class="r-card" style="padding:1.5rem;">
+              <div class="section-hdr">
+                <div class="section-title">📅 Upcoming Visits</div>
+                <span class="badge badge-blue">8 scheduled</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:0.65rem;">
+                <div class="upcoming-item">
+                  <div class="upcoming-time"><div class="upt-hour">11:00</div><div class="upt-ampm">AM</div></div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.855rem;">Amara Diallo</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">IBM · Host: Claire Harrison · Conf. Room 3B</div>
+                  </div>
+                  <button class="btn btn-xs btn-outline">🔔</button>
+                </div>
+                <div class="upcoming-item">
+                  <div class="upcoming-time"><div class="upt-hour">11:30</div><div class="upt-ampm">AM</div></div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.855rem;">Liu Ke</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">Alibaba Cloud · Host: Raj Nair · Board Room A</div>
+                  </div>
+                  <button class="btn btn-xs btn-outline">🔔</button>
+                </div>
+                <div class="upcoming-item">
+                  <div class="upcoming-time"><div class="upt-hour">12:00</div><div class="upt-ampm">PM</div></div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.855rem;">Yuki Tanaka</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">Sony Innovation · Host: Dev Mehta · Lab 5</div>
+                  </div>
+                  <button class="btn btn-xs btn-outline">🔔</button>
+                </div>
+                <div class="upcoming-item">
+                  <div class="upcoming-time" style="background:linear-gradient(135deg,var(--warning),#D97706);"><div class="upt-hour">01:30</div><div class="upt-ampm">PM</div></div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.855rem;">Sarah O'Brien <span class="badge badge-yellow" style="font-size:0.62rem;">VIP</span></div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">Accenture · Host: CEO Suite · Exec Floor 12</div>
+                  </div>
+                  <button class="btn btn-xs btn-warning">🔔 Set</button>
+                </div>
+                <div class="upcoming-item">
+                  <div class="upcoming-time"><div class="upt-hour">02:00</div><div class="upt-ampm">PM</div></div>
+                  <div style="flex:1;min-width:0;">
+                    <div style="font-weight:700;font-size:0.855rem;">Ravi Kumar</div>
+                    <div style="font-size:0.72rem;color:var(--text-muted);">TCS Group · Host: Sophia Patel · Floor 8</div>
+                  </div>
+                  <button class="btn btn-xs btn-outline">🔔</button>
+                </div>
+              </div>
+              <button class="btn btn-outline btn-full" style="margin-top:1rem;font-size:0.82rem;">View Full Schedule →</button>
+            </div>
+          </div>
+
+          <!-- ── NOTIFICATIONS PANEL ─────────────────────────────────── -->
+          <div class="r-card" style="padding:1.5rem;">
+            <div class="section-hdr">
+              <div>
+                <div class="section-title">🔔 Notifications</div>
+                <div class="section-subtitle">9 unread · prioritized by urgency</div>
+              </div>
+              <button class="btn btn-outline btn-sm">Mark All Read</button>
+            </div>
+            <div style="display:flex;flex-direction:column;">
+              <div class="notif-item" style="background:var(--danger-light);border-radius:var(--radius-md);margin-bottom:0.4rem;">
+                <div class="notif-icon" style="background:var(--danger);color:#fff;">🚨</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.855rem;color:var(--danger);">Security Alert — Unrecognized QR Scan at Gate 2</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);">Turnstile #04 triggered automatic lockdown · 2 mins ago</div>
+                </div>
+                <span class="badge badge-red">Urgent</span>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background:var(--warning-light);">⏳</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.855rem;">Approval Overdue — Priya Sharma waiting 22 min</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);">Host David Sterling has not responded · Escalate?</div>
+                </div>
+                <span class="badge badge-yellow">Action</span>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background:var(--success-light);">✅</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.855rem;">Visitor Arrived — Hana Tanaka checked in</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);">Gate A · Biometric confirmed · 10:28 AM</div>
+                </div>
+                <span class="badge badge-green">Info</span>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background:#FDF2F8;">🖨️</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.855rem;">Badge Printed — Elena Rostova</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);">Zebra ZD421 · Main Lobby · 09:14 AM</div>
+                </div>
+                <span class="badge badge-gray">Done</span>
+              </div>
+              <div class="notif-item">
+                <div class="notif-icon" style="background:var(--primary-light);">🔳</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.855rem;">QR Pass Generated — David K. Miller #V-8943</div>
+                  <div style="font-size:0.75rem;color:var(--text-muted);">Sent via email to david.m@kpmg.com · 09:40 AM</div>
+                </div>
+                <span class="badge badge-blue">QR</span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.main-col -->
+
+        <!-- RIGHT WIDGETS COLUMN -->
+        <div class="right-widgets">
+
+          <!-- MINI CALENDAR -->
+          <div class="r-card" style="padding:1.25rem;">
+            <div class="mini-cal">
+              <div class="cal-hdr">
+                <div class="cal-month">August 2026</div>
+                <div style="display:flex;gap:0.4rem;">
+                  <button class="cal-nav">‹</button>
+                  <button class="cal-nav">›</button>
+                </div>
+              </div>
+              <div class="cal-grid">
+                <div class="cal-day-name">Su</div><div class="cal-day-name">Mo</div>
+                <div class="cal-day-name">Tu</div><div class="cal-day-name">We</div>
+                <div class="cal-day-name">Th</div><div class="cal-day-name">Fr</div>
+                <div class="cal-day-name">Sa</div>
+                <div class="cal-day other-month">27</div><div class="cal-day other-month">28</div>
+                <div class="cal-day other-month">29</div><div class="cal-day other-month">30</div>
+                <div class="cal-day other-month">31</div><div class="cal-day has-event">1</div><div class="cal-day">2</div>
+                <div class="cal-day">3</div><div class="cal-day has-event">4</div>
+                <div class="cal-day">5</div><div class="cal-day today">6</div>
+                <div class="cal-day has-event">7</div><div class="cal-day">8</div><div class="cal-day">9</div>
+                <div class="cal-day">10</div><div class="cal-day">11</div>
+                <div class="cal-day">12</div><div class="cal-day has-event">13</div>
+                <div class="cal-day">14</div><div class="cal-day">15</div><div class="cal-day">16</div>
+                <div class="cal-day">17</div><div class="cal-day">18</div>
+                <div class="cal-day">19</div><div class="cal-day has-event">20</div>
+                <div class="cal-day">21</div><div class="cal-day">22</div><div class="cal-day">23</div>
+                <div class="cal-day">24</div><div class="cal-day">25</div>
+                <div class="cal-day">26</div><div class="cal-day">27</div>
+                <div class="cal-day">28</div><div class="cal-day">29</div><div class="cal-day">30</div>
+                <div class="cal-day">31</div>
+              </div>
+              <div style="margin-top:0.75rem;display:flex;align-items:center;gap:0.5rem;font-size:0.72rem;color:var(--text-muted);">
+                <span style="width:8px;height:8px;background:var(--danger);border-radius:50%;display:inline-block;"></span>
+                Event / Visit scheduled
+              </div>
+            </div>
+          </div>
+
+          <!-- WEATHER WIDGET -->
+          <div class="r-card" style="padding:1.25rem;background:linear-gradient(135deg,#0EA5E9 0%,#06B6D4 100%);border-color:transparent;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+              <div>
+                <div style="font-size:0.72rem;font-weight:700;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:0.08em;">Mumbai, India</div>
+                <div style="font-size:2.5rem;font-weight:900;color:#fff;line-height:1;">28°C</div>
+                <div style="font-size:0.82rem;color:rgba(255,255,255,0.85);">Partly Cloudy · Feels like 31°C</div>
+              </div>
+              <div style="font-size:3rem;">🌤️</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.5rem;">
+              <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:0.5rem;text-align:center;">
+                <div style="font-size:0.65rem;color:rgba(255,255,255,0.7);">HUMIDITY</div>
+                <div style="font-size:1rem;font-weight:800;color:#fff;">72%</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:0.5rem;text-align:center;">
+                <div style="font-size:0.65rem;color:rgba(255,255,255,0.7);">WIND</div>
+                <div style="font-size:1rem;font-weight:800;color:#fff;">18 km/h</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- QUICK NOTES -->
+          <div class="r-card" style="padding:1.25rem;">
+            <div class="section-hdr" style="margin-bottom:0.75rem;">
+              <div class="section-title" style="font-size:0.9rem;">📝 Quick Notes</div>
+              <button class="btn btn-xs btn-outline">Save</button>
+            </div>
+            <textarea class="notes-area" placeholder="Add a quick note for this shift…">VIP Visit: Sarah O'Brien (Accenture CEO) at 1:30 PM — arrange escort from main lobby.
+
+Conference rooms 3A and 5B pre-booked for afternoon.
+
+Security notified about Gate 2 issue.</textarea>
+          </div>
+
+          <!-- RECEPTION CHECKLIST -->
+          <div class="r-card" style="padding:1.25rem;">
+            <div class="section-hdr" style="margin-bottom:0.75rem;">
+              <div class="section-title" style="font-size:0.9rem;">✅ Shift Checklist</div>
+              <span class="badge badge-green">4/7 done</span>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="c1" checked>
+              <label for="c1">Morning briefing completed</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="c2" checked>
+              <label for="c2">Kiosk printer loaded (paper + ribbon)</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="c3" checked>
+              <label for="c3">Emergency contact list verified</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="c4" checked>
+              <label for="c4">Pre-registered list reviewed (12 visits)</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="c5">
+              <label for="c5">VIP visitor briefing (Sarah O'Brien 1:30 PM)</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="c6">
+              <label for="c6">Gate 2 security camera check</label>
+            </div>
+            <div class="checklist-item">
+              <input type="checkbox" id="c7">
+              <label for="c7">End-of-shift handover report filed</label>
+            </div>
+          </div>
+
+          <!-- EMERGENCY CONTACTS -->
+          <div class="r-card" style="padding:1.25rem;">
+            <div class="section-hdr" style="margin-bottom:0.75rem;">
+              <div class="section-title" style="font-size:0.9rem;">🚨 Emergency Contacts</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.5rem;">
+              <div class="emg-item">
+                <div class="emg-icon">🚒</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.82rem;">Fire &amp; Emergency</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);">101 · Building Control Room</div>
+                </div>
+                <button class="btn btn-xs btn-danger">📞 Call</button>
+              </div>
+              <div class="emg-item">
+                <div class="emg-icon">🏥</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.82rem;">Medical / First Aid</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);">102 · Nurse Station Floor 2</div>
+                </div>
+                <button class="btn btn-xs btn-danger">📞 Call</button>
+              </div>
+              <div class="emg-item">
+                <div class="emg-icon">👮</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.82rem;">Security Control</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);">Ext: 5000 · Marcus Vance (CSO)</div>
+                </div>
+                <button class="btn btn-xs btn-danger">📞 Call</button>
+              </div>
+              <div class="emg-item">
+                <div class="emg-icon">🔧</div>
+                <div style="flex:1;">
+                  <div style="font-weight:700;font-size:0.82rem;">IT Helpdesk</div>
+                  <div style="font-size:0.72rem;color:var(--text-muted);">Ext: 4400 · System Support</div>
+                </div>
+                <button class="btn btn-xs btn-outline">📞 Call</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- RECENT MESSAGES -->
+          <div class="r-card" style="padding:1.25rem;">
+            <div class="section-hdr" style="margin-bottom:0.75rem;">
+              <div class="section-title" style="font-size:0.9rem;">💬 Recent Messages</div>
+              <span class="badge badge-red">3 new</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:0.6rem;">
+              <div style="display:flex;gap:0.65rem;align-items:flex-start;padding:0.65rem;background:var(--primary-light);border-radius:var(--radius-md);border:1.5px solid rgba(37,99,235,0.15);">
+                <div class="user-avatar" style="width:32px;height:32px;background:linear-gradient(135deg,var(--primary),var(--secondary));font-size:0.72rem;">MV</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:0.8rem;">Marcus Vance <span style="font-weight:400;color:var(--text-muted);font-size:0.7rem;">· 9:22 AM</span></div>
+                  <div style="font-size:0.77rem;color:var(--text-secondary);">Please ensure Liu Ke gets VIP treatment today — board level.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:0.65rem;align-items:flex-start;padding:0.65rem;background:var(--bg);border-radius:var(--radius-md);border:1.5px solid var(--border);">
+                <div class="user-avatar" style="width:32px;height:32px;background:linear-gradient(135deg,#22C55E,#16A34A);font-size:0.72rem;">SP</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:0.8rem;">Sophia Patel <span style="font-weight:400;color:var(--text-muted);font-size:0.7rem;">· 9:18 AM</span></div>
+                  <div style="font-size:0.77rem;color:var(--text-secondary);">My 10 AM visitor cancelled — remove from the list please.</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:0.65rem;align-items:flex-start;padding:0.65rem;background:var(--bg);border-radius:var(--radius-md);border:1.5px solid var(--border);">
+                <div class="user-avatar" style="width:32px;height:32px;background:linear-gradient(135deg,#F59E0B,#D97706);font-size:0.72rem;">DS</div>
+                <div style="flex:1;min-width:0;">
+                  <div style="font-weight:700;font-size:0.8rem;">David Sterling <span style="font-weight:400;color:var(--text-muted);font-size:0.7rem;">· 9:05 AM</span></div>
+                  <div style="font-size:0.77rem;color:var(--text-secondary);">Running 10 min late, will approve Priya remotely.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.right-widgets -->
+      </div><!-- /.main-and-widgets -->
+
+    </div><!-- /.rec-content -->
+
+    <!-- ── FOOTER ────────────────────────────────────────────────────── -->
+    <footer class="rec-footer">
+      <div>
+        <strong style="color:var(--text-secondary);">SVPMS Enterprise</strong> · Smart Visitor Pass Management System ·
+        <span class="badge badge-green" style="vertical-align:middle;">v3.2.1 Live</span>
+      </div>
+      <div style="display:flex;gap:1.25rem;">
+        <a href="#">Support</a>
+        <a href="#">Documentation</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <span>© 2026 SVPMS Inc.</span>
+      </div>
+    </footer>
+  </div><!-- /.rec-main -->
+
+  <!-- ━━━━━━━━━━━━━━ REGISTER VISITOR MODAL ━━━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <div class="modal-overlay" id="register-modal">
+    <div class="modal-box">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.25rem;">
+        <div>
+          <div class="modal-title">➕ Register New Visitor</div>
+          <div class="modal-sub">Fill in the visitor details to generate a pass and badge</div>
+        </div>
+        <button class="btn btn-xs btn-outline" onclick="document.getElementById('register-modal').classList.remove('open')">✕ Close</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" class="form-input" placeholder="e.g. Priya Sharma">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Company *</label>
+          <input type="text" class="form-input" placeholder="e.g. Stripe Financial">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" placeholder="visitor@company.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" placeholder="+91 98765 43210">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Host Employee *</label>
+          <select class="form-input">
+            <option value="">Select Host…</option>
+            <option>Marcus Vance (CSO)</option>
+            <option>Sophia Patel (Finance)</option>
+            <option>David Sterling (Product Tech)</option>
+            <option>Claire Harrison (Executive)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Visit Purpose *</label>
+          <select class="form-input">
+            <option>Business Meeting</option>
+            <option>Interview</option>
+            <option>Vendor Service</option>
+            <option>Board Review</option>
+            <option>Compliance Audit</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Visitor Type</label>
+          <select class="form-input">
+            <option>Walk-In</option>
+            <option>Pre-Registered</option>
+            <option>VIP</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Expected Duration</label>
+          <select class="form-input">
+            <option>1 Hour</option>
+            <option>2 Hours</option>
+            <option>Half Day</option>
+            <option>Full Day</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border);display:flex;gap:0.75rem;justify-content:flex-end;">
+        <button class="btn btn-outline" onclick="document.getElementById('register-modal').classList.remove('open')">Cancel</button>
+        <button class="btn btn-secondary">📷 Capture Photo</button>
+        <button class="btn btn-primary">✓ Register &amp; Generate Pass →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ SCRIPTS ━━━━━━━━━━━━━━━━━━━━━━━━ -->
+  <script src="receptionist-shared.js"></script>
+  <script>initReceptionistShell('dashboard');</script>
+  <script>
+  /* ─── Live clock ──────────────────────────────────────── */
+  function updateBannerClock() {
+    const now = new Date();
+    const el = document.getElementById('banner-clock');
+    const de = document.getElementById('banner-date');
+    if (el) el.textContent = now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+    if (de) de.textContent = now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  }
+  updateBannerClock();
+  setInterval(updateBannerClock, 30000);
+
+  /* ─── Animated counters ───────────────────────────────── */
+  function animateCounter(el, target, duration = 1200) {
+    let start = 0; const step = target / (duration / 16);
+    const tick = () => {
+      start = Math.min(start + step, target);
+      el.textContent = Math.floor(start).toLocaleString();
+      if (start < target) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  document.querySelectorAll('.kpi-value').forEach(el => {
+    const val = parseInt(el.textContent.replace(/,/g,''));
+    el.textContent = '0';
+    setTimeout(() => animateCounter(el, val), 300);
+  });
+
+  /* ─── Sparkline charts ────────────────────────────────── */
+  const sparkOpts = {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+    scales: { x: { display: false }, y: { display: false } },
+    elements: { point: { radius: 0 }, line: { tension: 0.4, borderWidth: 2 } },
+  };
+  const sparkData = [
+    { id:'spark1', data:[180,195,210,230,240,250,260,265], color:'#2563EB', fill:'rgba(37,99,235,0.08)' },
+    { id:'spark2', data:[60,65,70,75,80,82,84,84],         color:'#22C55E', fill:'rgba(34,197,94,0.08)' },
+    { id:'spark3', data:[100,120,140,155,165,172,178,181], color:'#06B6D4', fill:'rgba(6,182,212,0.08)' },
+    { id:'spark4', data:[8,10,12,15,18,17,16,17],          color:'#F59E0B', fill:'rgba(245,158,11,0.08)' },
+    { id:'spark5', data:[20,25,28,32,35,36,37,38],         color:'#8B5CF6', fill:'rgba(139,92,246,0.08)' },
+    { id:'spark6', data:[180,190,200,210,215,220,225,227], color:'#6366F1', fill:'rgba(99,102,241,0.08)' },
+    { id:'spark7', data:[160,175,190,210,225,232,238,242], color:'#EF4444', fill:'rgba(239,68,68,0.08)' },
+    { id:'spark8', data:[130,145,158,170,182,190,195,198], color:'#EC4899', fill:'rgba(236,72,153,0.08)' },
+  ];
+  sparkData.forEach(({ id, data, color, fill }) => {
+    const ctx = document.getElementById(id);
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: data.map((_,i) => i),
+        datasets: [{ data, borderColor: color, backgroundColor: fill, fill: true }]
+      },
+      options: sparkOpts
+    });
+  });
+
+  /* ─── Hourly chart ────────────────────────────────────── */
+  (() => {
+    const ctx = document.getElementById('hourlyChart');
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['8AM','9AM','10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM'],
+        datasets: [{
+          label: 'Visitors',
+          data: [12, 48, 72, 95, 61, 44, 68, 88, 52, 18],
+          backgroundColor: 'rgba(37,99,235,0.8)',
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#94A3B8' } },
+          y: { grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { font: { size: 10 }, color: '#94A3B8' } }
+        }
+      }
+    });
+  })();
+
+  /* ─── Visitor type donut ─────────────────────────────── */
+  (() => {
+    const ctx = document.getElementById('typeChart');
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Pre-Reg', 'Walk-In', 'VIP', 'Vendor'],
+        datasets: [{
+          data: [62, 22, 8, 8],
+          backgroundColor: ['#2563EB','#8B5CF6','#F59E0B','#22C55E'],
+          borderWidth: 2,
+          borderColor: '#ffffff',
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        cutout: '68%',
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 10 }, padding: 8, color: '#64748B' } }
+        }
+      }
+    });
+  })();
+
+  /* ─── Department bar ─────────────────────────────────── */
+  (() => {
+    const ctx = document.getElementById('deptChart');
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Eng','Fin','Sales','Exec','HR'],
+        datasets: [{
+          data: [88, 52, 44, 38, 26],
+          backgroundColor: ['#2563EB','#22C55E','#F59E0B','#8B5CF6','#06B6D4'],
+          borderRadius: 6,
+          borderSkipped: false,
+        }]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#94A3B8' } },
+          y: { grid: { display: false }, ticks: { font: { size: 10 }, color: '#94A3B8' } }
+        }
+      }
+    });
+  })();
+
+  /* ─── Modal close on overlay click ──────────────────── */
+  document.getElementById('register-modal').addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+
+  /* ─── Checklist progress ─────────────────────────────── */
+  document.querySelectorAll('.checklist-item input').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const total = document.querySelectorAll('.checklist-item input').length;
+      const done  = document.querySelectorAll('.checklist-item input:checked').length;
+      const badge = document.querySelector('.shift-badge');
+      if (badge) badge.textContent = `${done}/${total} done`;
+    });
+  });
+  </script>
+</body>
+</html>

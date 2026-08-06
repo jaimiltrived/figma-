@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Analytics Telemetry - Super Admin Control Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root { --admin-sidebar-width: 260px; --admin-sidebar-collapsed-width: 76px; --admin-header-height: 64px; }
+    body.admin-body { background-color: var(--bg-primary); font-family: 'Inter', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+    .admin-header { position: fixed; top: 0; left: 0; right: 0; height: var(--admin-header-height); background: var(--bg-card); backdrop-filter: blur(16px); border-bottom: 1px solid var(--border-color); z-index: 1000; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; }
+    .admin-logo-group { display: flex; align-items: center; gap: 1rem; }
+    .sidebar-toggle-btn { width: 36px; height: 36px; border-radius: 8px; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .global-search-container { position: relative; width: 420px; }
+    .global-search-container input { width: 100%; padding: 0.55rem 2.5rem; border-radius: 20px; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 0.875rem; outline: none; }
+    .search-icon-left { position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .header-actions-group { display: flex; align-items: center; gap: 0.75rem; }
+    .icon-action-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; }
+    .icon-badge { position: absolute; top: -2px; right: -2px; width: 18px; height: 18px; border-radius: 50%; background: var(--danger); color: #fff; font-size: 0.68rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .admin-sidebar { position: fixed; top: var(--admin-header-height); left: 0; bottom: 0; width: var(--admin-sidebar-width); background: var(--bg-secondary); border-right: 1px solid var(--border-color); z-index: 900; overflow-y: auto; padding: 1rem 0; }
+    body.sidebar-collapsed .admin-sidebar { width: var(--admin-sidebar-collapsed-width); }
+    body.sidebar-collapsed .admin-sidebar .sidebar-label, body.sidebar-collapsed .admin-sidebar .menu-section-header, body.sidebar-collapsed .admin-sidebar .sidebar-badge { display: none; }
+    body.sidebar-collapsed .admin-main-wrapper { margin-left: var(--admin-sidebar-collapsed-width); }
+    .menu-section-header { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); padding: 0.75rem 1.5rem 0.35rem; }
+    .sidebar-menu-item { display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1.25rem; margin: 0.15rem 0.75rem; border-radius: 10px; color: var(--text-secondary); font-size: 0.875rem; font-weight: 600; cursor: pointer; text-decoration: none; }
+    .sidebar-menu-item:hover { background: var(--bg-tertiary); color: var(--text-primary); }
+    .sidebar-menu-item.active { background: var(--accent-gradient); color: #ffffff; box-shadow: var(--shadow-glow); }
+    .admin-main-wrapper { margin-top: var(--admin-header-height); margin-left: var(--admin-sidebar-width); padding: 1.5rem 2rem 4rem; transition: margin-left var(--transition-normal); }
+    .admin-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow-md); }
+  </style>
+</head>
+<body class="admin-body">
+  <div id="toast-container" class="toast-container"></div>
+
+  <header class="admin-header">
+    <div class="admin-logo-group">
+      <button id="sidebar-toggle-btn" class="sidebar-toggle-btn">☰</button>
+      <a href="../index.html" class="brand-logo"><div class="brand-icon">🛡️</div><span>SVPMS<span class="text-gradient">.io</span></span></a>
+      <span class="badge badge-primary">Super Admin Portal</span>
+    </div>
+    <div class="global-search-container">
+      <span class="search-icon-left">🔍</span>
+      <input type="text" placeholder="Search analytics, telemetry, peak hours...">
+    </div>
+    <div class="header-actions-group">
+      <button class="icon-action-btn" id="theme-toggle-btn"><span id="theme-icon">🌙</span></button>
+      <div style="display: flex; align-items: center; gap: 0.6rem; padding-left: 0.5rem; border-left: 1px solid var(--border-color);">
+        <div class="user-avatar" style="width: 38px; height: 38px; background: var(--accent-gradient); font-weight: 800;">MV</div>
+        <div><div style="font-weight: 800; font-size: 0.85rem;">Marcus Vance</div><div style="font-size: 0.72rem; color: var(--text-secondary);">Chief Security Officer</div></div>
+      </div>
+    </div>
+  </header>
+
+  <aside class="admin-sidebar">
+    <div class="menu-section-header">Core Command</div>
+    <a href="dashboard.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>📊</span><span class="sidebar-label">Dashboard Overview</span></div></a>
+    <a href="analytics.html" class="sidebar-menu-item active"><div style="display:flex;align-items:center;gap:0.75rem;"><span>📈</span><span class="sidebar-label">Analytics Telemetry</span></div></a>
+    
+    <div class="menu-section-header">Visitor Operations</div>
+    <a href="visitors.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>👥</span><span class="sidebar-label">Visitor Directory</span></div></a>
+    <a href="approvals.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>🎫</span><span class="sidebar-label">Approval Queue</span></div></a>
+
+    <div class="menu-section-header">Workplace & Staff</div>
+    <a href="employees.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>💼</span><span class="sidebar-label">Employee Directory</span></div></a>
+    <a href="departments.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>🏢</span><span class="sidebar-label">Departments & Gates</span></div></a>
+
+    <div class="menu-section-header">Security & Compliance</div>
+    <a href="blacklist.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>🛡️</span><span class="sidebar-label">Watchlist & Blacklist</span></div></a>
+    <a href="activity-logs.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>📜</span><span class="sidebar-label">Security Audit Logs</span></div></a>
+
+    <div class="menu-section-header">System Administration</div>
+    <a href="users-roles.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>🔐</span><span class="sidebar-label">Users & Permissions</span></div></a>
+    <a href="settings.html" class="sidebar-menu-item"><div style="display:flex;align-items:center;gap:0.75rem;"><span>⚙️</span><span class="sidebar-label">Global Settings</span></div></a>
+  </aside>
+
+  <main class="admin-main-wrapper">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <div>
+        <h1 style="font-size: 1.6rem; font-weight: 800;">📈 Analytics & Telemetry Center</h1>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">Real-time visitor influx metrics, peak hourly traffic heatmaps, and gate telemetry.</p>
+      </div>
+      <button class="btn btn-primary">Export Telemetry Data (CSV)</button>
+    </div>
+
+    <!-- Analytics Metrics Grid -->
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin-bottom: 1.75rem;">
+      <div class="admin-card">
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Average Dwell Time</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--accent-primary); margin: 0.35rem 0;">1h 42m</div>
+        <div style="font-size: 0.75rem; color: var(--success);">▼ -8 mins (Faster Checkout)</div>
+      </div>
+      <div class="admin-card">
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Peak Hour Influx</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--warning); margin: 0.35rem 0;">10:00 AM - 11:30 AM</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">142 check-ins / hour</div>
+      </div>
+      <div class="admin-card">
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Host Approval Ratio</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: var(--success); margin: 0.35rem 0;">98.4%</div>
+        <div style="font-size: 0.75rem; color: var(--success);">▲ 1.2% Approval Speed</div>
+      </div>
+      <div class="admin-card">
+        <div style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Badge Re-print Rate</div>
+        <div style="font-size: 1.8rem; font-weight: 800; color: #3b82f6; margin: 0.35rem 0;">0.8%</div>
+        <div style="font-size: 0.75rem; color: var(--success);">Low thermal paper wastage</div>
+      </div>
+    </div>
+
+    <!-- Charts -->
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; margin-bottom: 1.75rem;">
+      <div class="admin-card">
+        <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem;">Hourly Gate Influx Heatmap</h3>
+        <div style="height: 280px;"><canvas id="hourlyHeatmapChart"></canvas></div>
+      </div>
+      <div class="admin-card">
+        <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 1rem;">Gate Distribution</h3>
+        <div style="height: 280px;"><canvas id="gateDistributionChart"></canvas></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="../app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof Chart !== 'undefined') {
+        new Chart(document.getElementById('hourlyHeatmapChart').getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: ['8 AM', '9 AM', '10 AM', '11 AM', '12 PM', '1 PM', '2 PM', '3 PM', '4 PM', '5 PM'],
+            datasets: [{ label: 'Check-Ins', data: [35, 88, 142, 110, 65, 48, 75, 92, 60, 24], backgroundColor: '#6366f1', borderRadius: 8 }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+        new Chart(document.getElementById('gateDistributionChart').getContext('2d'), {
+          type: 'pie',
+          data: {
+            labels: ['Main Lobby Kiosk A', 'Gate 2 North', 'Exec Floor 12', 'Innovation Hub'],
+            datasets: [{ data: [45, 25, 18, 12], backgroundColor: ['#6366f1', '#10b981', '#f59e0b', '#d946ef'] }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

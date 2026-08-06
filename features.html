@@ -3,17 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Features - SVPMS Enterprise Visitor Management</title>
+  <title>Enterprise Features & Capabilities - SVPMS</title>
+  <meta name="description" content="Explore 50+ enterprise visitor management features: touchless iPad kiosks, instant Slack/Teams alerts, AI watchlists, emergency rosters, and custom NDA signatures.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Custom Styles for Features Showcase Page */
+    .features-hero { text-align: center; padding: 4rem 1.5rem 3rem; position: relative; }
+    .feature-search-box { max-width: 640px; margin: 2rem auto 0; position: relative; }
+    .feature-search-box input { width: 100%; padding: 1rem 1.25rem 1rem 3rem; border-radius: var(--radius-full); background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); font-size: 1rem; outline: none; box-shadow: var(--shadow-md); transition: all var(--transition-fast); }
+    .feature-search-box input:focus { border-color: var(--accent-primary); box-shadow: var(--shadow-glow); }
+    .feature-search-icon { position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: var(--text-muted); }
+
+    .role-tabs { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 3rem; }
+    .role-tab-btn { padding: 0.75rem 1.5rem; border-radius: var(--radius-full); background: var(--bg-tertiary); border: 1px solid var(--border-color); color: var(--text-secondary); font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all var(--transition-fast); display: flex; align-items: center; gap: 0.5rem; }
+    .role-tab-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+    .role-tab-btn.active { background: var(--accent-gradient); color: #ffffff; border-color: transparent; box-shadow: var(--shadow-glow); }
+
+    .kiosk-demo-box { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-xl); padding: 2rem; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; }
+    .step-pill { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; }
+
+    .comparison-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem; }
+    .comparison-table th { padding: 1.2rem 1rem; border-bottom: 2px solid var(--border-color); background: var(--bg-tertiary); color: var(--text-secondary); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; }
+    .comparison-table td { padding: 1.1rem 1rem; border-bottom: 1px solid var(--border-color); }
+    .comparison-table tr:hover td { background: var(--bg-card-hover); }
+    .check-yes { color: var(--success); font-weight: 800; font-size: 1.1rem; }
+    .check-no { color: var(--text-muted); font-size: 1rem; }
+  </style>
 </head>
 <body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
 
   <!-- Navigation Bar -->
   <nav class="navbar">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo">
-        <div class="brand-icon">🛡️</div>
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+        </div>
         <span>SVPMS<span class="text-gradient">.io</span></span>
       </a>
 
@@ -27,60 +61,378 @@
       </ul>
 
       <div class="nav-actions">
-        <button id="theme-toggle-btn" class="theme-toggle">🌙</button>
+        <button id="theme-toggle-btn" class="theme-toggle" title="Toggle Theme">
+          <span id="theme-icon">🌙</span>
+        </button>
         <a href="choose-role.html" class="btn btn-outline">Sign In</a>
         <a href="choose-role.html" class="btn btn-primary">Book Demo</a>
       </div>
     </div>
   </nav>
 
-  <main class="container" style="padding: 5rem 1.5rem;">
-    <div class="section-header">
-      <div class="badge badge-primary">Complete Feature Matrix</div>
-      <h2>Enterprise Platform Capabilities</h2>
-      <p>Explore our end-to-end features crafted for receptionists, hosts, security guards, and administrators.</p>
-    </div>
+  <!-- Features Hero Section -->
+  <header class="features-hero">
+    <div class="hero-bg-glow"></div>
+    <div class="container">
+      <div class="badge badge-primary mb-3">✨ 50+ Enterprise Security Features</div>
+      <h1 style="font-size: 2.75rem; font-weight: 800; line-height: 1.2;">
+        Next-Gen Visitor Security & <span class="text-gradient">Workplace Automation</span>
+      </h1>
+      <p style="max-width: 720px; margin: 1rem auto 0; color: var(--text-secondary); font-size: 1.1rem;">
+        From touchless iPad kiosk check-ins and AI watchlists to real-time evacuation logs and automated Slack host alerts — discover what powers modern enterprise lobbies.
+      </p>
 
-    <div class="grid grid-3 gap-3" style="margin-bottom: 4rem;">
-      <div class="glass-panel feature-card">
-        <div class="feature-icon">📲</div>
-        <h3>QR Pass & Kiosk Check-In</h3>
-        <p>Contactless registration via self-service iPad/tablet kiosks or instant smartphone QR scanning.</p>
-      </div>
-      <div class="glass-panel feature-card">
-        <div class="feature-icon">🖨️</div>
-        <h3>Badge Printing</h3>
-        <p>Automatic thermal printing of customized visitor badges with NDA signatures and photo ID.</p>
-      </div>
-      <div class="glass-panel feature-card">
-        <div class="feature-icon">📍</div>
-        <h3>Live Occupancy Tracking</h3>
-        <p>Real-time dashboard showing exactly who is in your facility during emergency evacuations.</p>
-      </div>
-      <div class="glass-panel feature-card">
-        <div class="feature-icon">🤖</div>
-        <h3>AI Watchlist & Recognition</h3>
-        <p>Automated security screening against internal ban lists and VIP arrival notifications.</p>
-      </div>
-      <div class="glass-panel feature-card">
-        <div class="feature-icon">🔔</div>
-        <h3>Instant Host Alerts</h3>
-        <p>Multi-channel notifications delivered instantly via Slack, Microsoft Teams, SMS, or Email.</p>
-      </div>
-      <div class="glass-panel feature-card">
-        <div class="feature-icon">📊</div>
-        <h3>Analytics & Audit Reports</h3>
-        <p>Export compliance audit logs, peak traffic reports, and visitor volume statistics with 1 click.</p>
+      <div class="feature-search-box">
+        <span class="feature-search-icon">🔍</span>
+        <input type="text" id="feature-search-input" placeholder="Search features (e.g. NDA, Slack, Kiosk, Watchlist, Badge printer, Evacuation)...">
       </div>
     </div>
-  </main>
+  </header>
 
+  <!-- Interactive Role-Based Feature Showcase -->
+  <section class="container" style="padding: 2rem 1.5rem 5rem;">
+    <!-- Filter Tabs -->
+    <div class="role-tabs">
+      <button class="role-tab-btn active" data-tab="all">
+        <span>🌟</span> All Capabilities
+      </button>
+      <button class="role-tab-btn" data-tab="kiosk">
+        <span>🖥️</span> Kiosk & Self-Check-in
+      </button>
+      <button class="role-tab-btn" data-tab="security">
+        <span>🛡️</span> Security & Watchlists
+      </button>
+      <button class="role-tab-btn" data-tab="host">
+        <span>🔔</span> Host & Employee Experience
+      </button>
+      <button class="role-tab-btn" data-tab="compliance">
+        <span>🔒</span> IT & Compliance
+      </button>
+    </div>
+
+    <!-- Feature Grid -->
+    <div id="features-grid" class="grid grid-3 gap-3">
+      <!-- Feature 1 -->
+      <div class="glass-panel feature-card" data-category="kiosk" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">📲</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Touchless QR & Kiosk Check-In</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Visitors check in within 8 seconds using touchless smartphone QR passes or self-service iPad kiosks in 20+ languages.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--accent-primary); font-weight: 700;">● Multi-Language Support</div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="glass-panel feature-card" data-category="kiosk" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">🖨️</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Automatic Thermal Badge Printing</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Instantly triggers wireless Brother & Zebra thermal badge printers to output photo ID badges with QR validation codes.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--success); font-weight: 700;">● Wireless Thermal Integration</div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="glass-panel feature-card" data-category="security" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(239, 68, 68, 0.15); color: var(--danger);">🛡️</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">AI Watchlist & Ban List Matching</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Automatic real-time background cross-checking against internal watchlists, revoked contractors, and security alerts.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--danger); font-weight: 700;">● Real-time Security Screening</div>
+      </div>
+
+      <!-- Feature 4 -->
+      <div class="glass-panel feature-card" data-category="host" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--warning);">🔔</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Instant Multi-Channel Host Alerts</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Notifies employee hosts the exact second their guest arrives via Slack bot, Microsoft Teams, SMS text, or Email.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--warning); font-weight: 700;">● Slack & Teams Bots Built-in</div>
+      </div>
+
+      <!-- Feature 5 -->
+      <div class="glass-panel feature-card" data-category="security" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">🚨</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">1-Click Emergency Evacuation Roster</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Provides safety marshals with a live mobile head-count roster of every checked-in visitor and employee during drills.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: #3b82f6; font-weight: 700;">● Mobile Safety Roll-Call</div>
+      </div>
+
+      <!-- Feature 6 -->
+      <div class="glass-panel feature-card" data-category="compliance" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(217, 70, 239, 0.15); color: #d946ef;">✍️</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Digital NDA & Health Safety Agreements</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Capture legally binding digital signatures on non-disclosure agreements, safety protocols, and health waivers on kiosk.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: #d946ef; font-weight: 700;">● PDF Vault Storage</div>
+      </div>
+
+      <!-- Feature 7 -->
+      <div class="glass-panel feature-card" data-category="host" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">🎫</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">VIP Express Pre-Approval Passes</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Send personalized calendar invites with pre-registered wallet QR passes directly to VIP guests before they arrive.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--accent-primary); font-weight: 700;">● Apple & Google Wallet Compatible</div>
+      </div>
+
+      <!-- Feature 8 -->
+      <div class="glass-panel feature-card" data-category="compliance" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--success);">🏢</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Multi-Tenant & Multi-Location Hierarchy</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Manage hundreds of global corporate offices, commercial towers, and subsidiary organizations from a single pane of glass.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: var(--success); font-weight: 700;">● Global HQ Dashboard</div>
+      </div>
+
+      <!-- Feature 9 -->
+      <div class="glass-panel feature-card" data-category="compliance" style="padding: 2rem;">
+        <div class="feature-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">🔐</div>
+        <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem;">Enterprise SSO, SAML 2.0 & Webhooks</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Native Okta, Azure AD, OneLogin SSO integration with bi-directional REST APIs and webhooks for access control.
+        </p>
+        <div style="margin-top: 1rem; font-size: 0.8rem; color: #3b82f6; font-weight: 700;">● Okta & Azure AD Native</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Interactive Feature Demo Simulator Section -->
+  <section style="background: var(--bg-secondary); padding: 5rem 1.5rem; border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="container">
+      <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+        <div class="badge badge-primary">Interactive Preview</div>
+        <h2 style="font-size: 2.2rem; font-weight: 800;">Experience the Visitor Journey</h2>
+        <p>Watch how SVPMS orchestrates seamless check-ins from lobby kiosk to host notification.</p>
+      </div>
+
+      <div class="grid grid-2 gap-4" style="align-items: center;">
+        <!-- Left Column: Kiosk Simulator Box -->
+        <div class="kiosk-demo-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 800;">
+              <span>📱</span> iPad Kiosk Terminal #01
+            </div>
+            <span class="badge badge-success">● Ready to Scan</span>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div class="step-pill">1</div>
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem;">Tap or Scan QR Pass</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">Visitor scans mobile QR pass or taps "Walk-in Guest"</div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div class="step-pill">2</div>
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem;">Digital NDA & Photo Capture</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">Sign safety agreement & capture high-resolution badge photo</div>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--bg-tertiary); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
+              <div class="step-pill">3</div>
+              <div>
+                <div style="font-weight: 700; font-size: 0.95rem;">Instant Host Notification & Badge Print</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary);">Host receives Slack alert while thermal printer outputs badge #V-8942</div>
+              </div>
+            </div>
+          </div>
+
+          <button id="btn-trigger-demo-toast" class="btn btn-primary btn-full" style="margin-top: 1.5rem;">
+            ▶ Test Live Host Notification Trigger
+          </button>
+        </div>
+
+        <!-- Right Column: Slack / Teams Notification Mockup -->
+        <div>
+          <h3 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1rem;">
+            Automated Host Alerts in <span style="color: #e01e5a;">Slack</span> & <span style="color: #5b5fc7;">Teams</span>
+          </h3>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+            Never keep a guest waiting in the lobby. SVPMS automatically routes arrival notifications with guest photo, organization, and access zone directly to the host's active chat application.
+          </p>
+
+          <!-- Mock Slack Message Card -->
+          <div class="glass-panel" style="padding: 1.5rem; border-left: 4px solid var(--success);">
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+              <div style="width: 32px; height: 32px; border-radius: 6px; background: var(--accent-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem;">SVPMS</div>
+              <div>
+                <span style="font-weight: 800; font-size: 0.9rem;">SVPMS Security Bot</span>
+                <span style="font-size: 0.75rem; color: var(--text-muted); margin-left: 0.5rem;">APP • 10:34 AM</span>
+              </div>
+            </div>
+
+            <div style="font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; color: var(--text-primary);">
+              🟢 Your Guest has arrived in Main Lobby!
+            </div>
+            <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+              <strong>Visitor:</strong> Elena Rostova (Senior Architect, AWS Cloud)<br>
+              <strong>Host:</strong> Marcus Vance (VP Engineering)<br>
+              <strong>Badge ID:</strong> #V-8942 • <strong>Location:</strong> Gate 2 North
+            </div>
+
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+              <button class="btn btn-primary" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;" onclick="alert('Host confirmed: I am coming down to lobby!')">I'm Coming Down</button>
+              <button class="btn btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.8rem;" onclick="alert('Host sent instructions: Direct guest to Room 302')">Send to Room 302</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Enterprise Capability Comparison Table -->
+  <section class="container" style="padding: 5rem 1.5rem;">
+    <div class="section-header" style="text-align: center; margin-bottom: 3rem;">
+      <div class="badge badge-primary">Why Upgrade to SVPMS</div>
+      <h2 style="font-size: 2.2rem; font-weight: 800;">Paper Logs vs Legacy Software vs SVPMS</h2>
+      <p>Compare enterprise capabilities side-by-side to see the security & speed advantage.</p>
+    </div>
+
+    <div class="glass-panel" style="padding: 1.5rem; overflow-x: auto;">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Security & Compliance Feature</th>
+            <th>Paper Visitor Logbook</th>
+            <th>Legacy Software</th>
+            <th style="color: var(--accent-primary); font-weight: 800;">SVPMS Enterprise</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Touchless QR Code Check-in</strong></td>
+            <td><span class="check-no">✕ No</span></td>
+            <td><span class="check-no">✕ Partial</span></td>
+            <td><span class="check-yes">✓ Included (8s Check-in)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Instant Slack & MS Teams Host Alerts</strong></td>
+            <td><span class="check-no">✕ Manual Phone Call</span></td>
+            <td><span class="check-no">✕ Email Only</span></td>
+            <td><span class="check-yes">✓ Instant Bot Messaging</span></td>
+          </tr>
+          <tr>
+            <td><strong>AI Watchlist & Ban List Cross-Checking</strong></td>
+            <td><span class="check-no">✕ Impossible</span></td>
+            <td><span class="check-no">✕ Manual Lookup</span></td>
+            <td><span class="check-yes">✓ Instant AI Match & Alert</span></td>
+          </tr>
+          <tr>
+            <td><strong>1-Click Mobile Evacuation Roster</strong></td>
+            <td><span class="check-no">✕ Paper Lost in Fire</span></td>
+            <td><span class="check-no">✕ Desktop Only</span></td>
+            <td><span class="check-yes">✓ Live Offline Mobile Rollcall</span></td>
+          </tr>
+          <tr>
+            <td><strong>Thermal Badge & Photo ID Printing</strong></td>
+            <td><span class="check-no">✕ Hand-written Sticker</span></td>
+            <td><span class="check-yes">✓ Basic Print</span></td>
+            <td><span class="check-yes">✓ Wireless High-speed Thermal</span></td>
+          </tr>
+          <tr>
+            <td><strong>SOC2 Type II & GDPR Vault Retention</strong></td>
+            <td><span class="check-no">✕ GDPR Violation</span></td>
+            <td><span class="check-no">✕ Standard Cloud</span></td>
+            <td><span class="check-yes">✓ Bank-grade Encryption</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="container" style="padding-bottom: 5rem;">
+    <div class="glass-panel" style="padding: 3.5rem 2rem; text-align: center; background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(217, 70, 239, 0.15) 100%); border: 1px solid var(--accent-glow);">
+      <h2 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.75rem;">
+        Ready to Transform Your Workplace Security?
+      </h2>
+      <p style="max-width: 600px; margin: 0 auto 2rem; color: var(--text-secondary);">
+        Deploy SVPMS across your corporate lobbies in less than 15 minutes with zero hardware lock-in.
+      </p>
+      <div class="flex justify-center gap-3">
+        <a href="choose-role.html" class="btn btn-primary btn-lg">Start 14-Day Free Trial ➔</a>
+        <a href="contact.html" class="btn btn-outline btn-lg">Request Security Demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
   <footer>
-    <div class="container" style="text-align: center; font-size: 0.85rem; color: var(--text-secondary);">
-      © 2026 SVPMS Security Systems Inc. All rights reserved. | <a href="index.html">Back to Home</a>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; padding: 2rem 1.5rem; border-top: 1px solid var(--border-color); font-size: 0.85rem; color: var(--text-secondary);">
+      <div>© 2026 SVPMS Security Systems Inc. All rights reserved.</div>
+      <div style="display: flex; gap: 1.5rem;">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="contact.html">Contact</a>
+        <a href="help.html">Help Center</a>
+      </div>
     </div>
   </footer>
 
   <script src="app.js"></script>
+  <script>
+    // Features Page Specific Filtering Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      const featureSearchInput = document.getElementById('feature-search-input');
+      const roleTabBtns = document.querySelectorAll('.role-tab-btn');
+      const featureCards = document.querySelectorAll('#features-grid .feature-card');
+
+      function filterFeatures() {
+        const query = (featureSearchInput ? featureSearchInput.value : '').toLowerCase();
+        const activeTab = document.querySelector('.role-tab-btn.active')?.dataset.tab || 'all';
+
+        featureCards.forEach(card => {
+          const text = card.textContent.toLowerCase();
+          const category = card.dataset.category || '';
+
+          const matchesQuery = text.includes(query);
+          const matchesTab = (activeTab === 'all') || (category === activeTab);
+
+          if (matchesQuery && matchesTab) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      }
+
+      if (featureSearchInput) {
+        featureSearchInput.addEventListener('input', filterFeatures);
+      }
+
+      roleTabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          roleTabBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterFeatures();
+        });
+      });
+
+      const btnTriggerDemoToast = document.getElementById('btn-trigger-demo-toast');
+      if (btnTriggerDemoToast) {
+        btnTriggerDemoToast.addEventListener('click', () => {
+          if (typeof showToast === 'function') {
+            showToast('Simulating check-in: Slack alert sent to Marcus Vance!', 'success');
+          } else {
+            alert('Simulating check-in: Slack alert sent to Marcus Vance!');
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
+

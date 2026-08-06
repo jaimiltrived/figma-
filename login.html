@@ -67,6 +67,7 @@
     const roleParam = urlParams.get('role');
     if (roleParam) {
       document.getElementById('login-role-title').textContent = roleParam + ' Portal';
+      localStorage.setItem('svpms_role', roleParam);
     }
   </script>
   <script src="app.js"></script>

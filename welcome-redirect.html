@@ -23,12 +23,17 @@
   <script>
     let progress = 0;
     const bar = document.getElementById('redirect-progress');
+    const role = localStorage.getItem('svpms_role') || new URLSearchParams(window.location.search).get('role');
+    const targetUrl = (role && role.toLowerCase().includes('reception')) 
+      ? 'receptionist/dashboard.html' 
+      : 'admin/dashboard.html';
+
     const interval = setInterval(() => {
       progress += 25;
       if (bar) bar.style.width = progress + '%';
       if (progress >= 100) {
         clearInterval(interval);
-        window.location.href = 'admin/dashboard.html';
+        window.location.href = targetUrl;
       }
     }, 250);
   </script>
